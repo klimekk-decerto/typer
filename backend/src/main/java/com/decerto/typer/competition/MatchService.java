@@ -1,5 +1,8 @@
 package com.decerto.typer.competition;
 
+import com.decerto.typer.prediction.Prediction;
+import com.decerto.typer.prediction.PredictionRepository;
+import com.decerto.typer.ranking.RankingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

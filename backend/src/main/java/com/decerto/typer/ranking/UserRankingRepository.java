@@ -1,4 +1,4 @@
-package com.decerto.typer.competition;
+package com.decerto.typer.ranking;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

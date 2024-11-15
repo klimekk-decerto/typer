@@ -10,17 +10,11 @@ import java.util.Map;
 public class CompetitionFacade {
     private final CompetitionService competitionService;
     private final MatchService matchService;
-    private final PredictionService predictionService;
-    private final RankingService rankingService;
 
     public CompetitionFacade(CompetitionService competitionService,
-                             MatchService matchService,
-                             PredictionService predictionService,
-                             RankingService rankingService) {
+                             MatchService matchService) {
         this.competitionService = competitionService;
         this.matchService = matchService;
-        this.predictionService = predictionService;
-        this.rankingService = rankingService;
     }
 
     public Competition createLeagueCompetition(String name, List<String> teamNames) {
@@ -39,12 +33,8 @@ public class CompetitionFacade {
         return matchService.setMatchDate(matchId, dateTime);
     }
 
-    public Prediction placePrediction(String username, Long matchId, Integer scoreA, Integer scoreB, boolean isDraw) {
-        return predictionService.placePrediction(username, matchId, scoreA, scoreB, isDraw);
-    }
-
-    public List<UserRanking> getRanking() {
-        return rankingService.getRanking();
+    public void beginCompetition(Long competitionId) {
+        competitionService.beginCompetition(competitionId);
     }
 
     public Match setMatchResult(Long matchId, Integer scoreA, Integer scoreB) {

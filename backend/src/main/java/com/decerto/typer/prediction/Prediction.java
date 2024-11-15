@@ -1,6 +1,7 @@
-package com.decerto.typer.competition;
+package com.decerto.typer.prediction;
 
 
+import com.decerto.typer.competition.Match;
 import jakarta.persistence.*;
 
 
