@@ -17,3 +17,13 @@ Popraw tworzenie rozgrywki. Niech w fasadzie będą osobne metody: jedna do twor
 Do stworzenia rozgrywki ligowej użytkownik musi podać listę nazw drużyn zamiast ilości.
 Do stworzenia rozgrywki turniejowej użytkownik musi podać listę nazw grup, gdzie każda musi zawierać listę nazw drużyn w ramach tej grupy.
 Podaj mi sam kod bez dodatkowego tłumaczenia.
+
+# 2 - Konfiguracja Security
+
+## Pierwszy prompt
+Przygotuj mi całą konfigurację i implementację dla Spring Security. Logowanie i rejestracja użytkownika. Podaje on login i hasło. Uwierzytelnianie przy użyciu Basic authentication. Baza danych h2, automatycznie generowana scheme bazy.
+
+
+## Dodanie ról
+Niech security uwzględnia dwie role: USER i ADMIN
+
