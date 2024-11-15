@@ -12,22 +12,19 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class MatchService {
+    private final CompetitionRepository competitionRepository;
     private final MatchRepository matchRepository;
     private final PredictionRepository predictionRepository;
     private final RankingService rankingService;
 
-    public Match setMatchResult(Long matchId, Integer scoreA, Integer scoreB) {
+    public Match setMatchResult(Long competitionId, Long matchId, Integer scoreA, Integer scoreB) {
+        Competition competition = competitionRepository.findById(competitionId).orElseThrow();
+        competition.setMatchResult(matchId, scoreA, scoreB);
+
+
         Match match = matchRepository.findById(matchId).orElseThrow();
-        match.setScoreA(scoreA);
-        match.setScoreB(scoreB);
-        match.setStatus(MatchStatus.COMPLETED);
-
-        matchRepository.save(match);
-
-        // Rozliczanie typowań
         List<Prediction> predictions = predictionRepository.findByMatch(match);
         rankingService.processPredictions(predictions, match);
-
         return match;
     }
 

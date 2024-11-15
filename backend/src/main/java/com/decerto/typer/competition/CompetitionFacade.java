@@ -37,8 +37,8 @@ public class CompetitionFacade {
         competitionService.beginCompetition(competitionId);
     }
 
-    public Match setMatchResult(Long matchId, Integer scoreA, Integer scoreB) {
-        return matchService.setMatchResult(matchId, scoreA, scoreB);
+    public Match setMatchResult(Long competitionId, Long matchId, Integer scoreA, Integer scoreB) {
+        return matchService.setMatchResult(competitionId, matchId, scoreA, scoreB);
     }
 }
 

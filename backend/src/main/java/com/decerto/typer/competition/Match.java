@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Entity
 @Setter
@@ -15,8 +16,10 @@ public class Match {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String teamA;
-    private String teamB;
+    @OneToOne
+    private Team firstTeam;
+    @OneToOne
+    private Team secondTeam;
 
     private Integer scoreA;
     private Integer scoreB;
@@ -29,11 +32,30 @@ public class Match {
     @JoinColumn(name = "round_id")
     private Round round;
 
-    private String groupName;  // For tournaments, the group where this match belongs
+    private String groupName;
     private LocalDateTime matchDate;
 
 
     private MatchStatus status = MatchStatus.NOT_STARTED;
 
+    public void setResult(Integer scoreA, Integer scoreB) {
+        this.scoreA = scoreA;
+        this.scoreB = scoreB;
+        this.status = MatchStatus.COMPLETED;
+    }
+
+    public boolean isCompleted() {
+        return status == MatchStatus.COMPLETED;
+    }
+
+    public Optional<Team> getWinnerTeam() {
+        if (status == MatchStatus.COMPLETED) {
+            return scoreA > scoreB
+                    ? Optional.of(firstTeam)
+                    : Optional.of(secondTeam);
+        }
+
+        return Optional.empty();
+    }
 }
 

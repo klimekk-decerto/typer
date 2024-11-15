@@ -1,5 +1,5 @@
 package com.decerto.typer.competition;
 
 public enum CompetitionStatus {
-    CREATING, IN_PROGRESS
+    CREATING, FIRST_PHASE, FINAL_PHASE, COMPLETED
 }

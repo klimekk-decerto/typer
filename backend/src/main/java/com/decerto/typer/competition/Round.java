@@ -2,17 +2,21 @@ package com.decerto.typer.competition;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
+import java.util.Optional;
 
+@Setter
+@Getter
 @Entity
 public class Round {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;  // Name of the round (e.g., "Round 1")
-
+    private String name;
     @ManyToOne
     @JoinColumn(name = "competition_id")
     private Competition competition;
@@ -20,37 +24,25 @@ public class Round {
     @OneToMany(mappedBy = "round", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Match> matches;
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
+
+    public Optional<Match> findMatch(Long matchId) {
+        return matches.stream()
+                .filter(match -> match.getId().equals(matchId))
+                .findFirst();
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public int numberOfMatches() {
+        return matches.size();
     }
 
-    public String getName() {
-        return name;
+    public boolean allMatchesCompleted() {
+        return matches.stream().allMatch(Match::isCompleted);
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Competition getCompetition() {
-        return competition;
-    }
-
-    public void setCompetition(Competition competition) {
-        this.competition = competition;
-    }
-
-    public List<Match> getMatches() {
-        return matches;
-    }
-
-    public void setMatches(List<Match> matches) {
-        this.matches = matches;
+    public void addMatch(Match match) {
+        this.matches.add(match);
+        match.setRound(this);
+        match.setCompetition(competition);
     }
 }
 

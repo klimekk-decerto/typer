@@ -3,6 +3,7 @@ package com.decerto.typer.competition;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +27,7 @@ public class CompetitionService {
             Team team = new Team();
             team.setName(teamName);
             team.setCompetition(competition);
+            team.setGroupName("Liga");
             teams.add(team);
         }
         competition.setTeams(teams);
@@ -35,34 +37,9 @@ public class CompetitionService {
         return competition;
     }
 
-    public Competition createTournamentCompetition(String name, Map<String, List<String>> groupTeams) {
-        Competition competition = new Competition();
-        competition.setName(name);
-        competition.setType(CompetitionType.TOURNAMENT);
-
-        List<Team> teams = new ArrayList<>();
-        for (Map.Entry<String, List<String>> groupEntry : groupTeams.entrySet()) {
-            String groupName = groupEntry.getKey();
-            List<String> teamNames = groupEntry.getValue();
-
-            for (String teamName : teamNames) {
-                Team team = new Team();
-                team.setName(teamName);
-                team.setGroupName(groupName);
-                team.setCompetition(competition);
-                teams.add(team);
-            }
-        }
-        competition.setTeams(teams);
-
-        competitionRepository.save(competition);
-        generateTournamentSchedule(competition, groupTeams);
-        return competition;
-    }
-
     private void generateLeagueSchedule(Competition competition) {
         List<Team> teams = competition.getTeams();
-        int totalRounds = teams.size() - 1;
+        int totalRounds = 2 * (teams.size() - 1);
 
         for (int roundNumber = 1; roundNumber <= totalRounds; roundNumber++) {
             Round round = new Round();
@@ -74,25 +51,58 @@ public class CompetitionService {
                 int teamBIndex = (teams.size() - 1 - i + roundNumber) % teams.size();
 
                 Match match = new Match();
-                match.setTeamA(teams.get(teamAIndex).getName());
-                match.setTeamB(teams.get(teamBIndex).getName());
-                match.setRound(round);
+                if (roundNumber % 2 == 0) {
+                    match.setFirstTeam(teams.get(teamAIndex));
+                    match.setSecondTeam(teams.get(teamBIndex));
+                } else {
+                    match.setSecondTeam(teams.get(teamAIndex));
+                    match.setFirstTeam(teams.get(teamBIndex));
+                }
                 match.setCompetition(competition);
                 matchRepository.save(match);
             }
         }
     }
 
-    private void generateTournamentSchedule(Competition competition, Map<String, List<String>> groupTeams) {
+    public Competition createTournamentCompetition(String name, Map<String, List<String>> groupTeams) {
+        Competition competition = new Competition();
+        competition.setName(name);
+        competition.setType(CompetitionType.TOURNAMENT);
+
+        List<Team> teams = new ArrayList<>();
+        Map<String, List<Team>> groupTeamsObj = new HashMap<>();
         for (Map.Entry<String, List<String>> groupEntry : groupTeams.entrySet()) {
             String groupName = groupEntry.getKey();
             List<String> teamNames = groupEntry.getValue();
+            List<Team> teamsPerGroup = new ArrayList<>();
+
+            for (String teamName : teamNames) {
+                Team team = new Team();
+                team.setName(teamName);
+                team.setGroupName(groupName);
+                team.setCompetition(competition);
+                teams.add(team);
+                teamsPerGroup.add(team);
+            }
+            groupTeamsObj.put(groupName, teamsPerGroup);
+        }
+        competition.setTeams(teams);
+
+        competitionRepository.save(competition);
+        generateTournamentSchedule(competition, groupTeamsObj);
+        return competition;
+    }
+
+    private void generateTournamentSchedule(Competition competition, Map<String, List<Team>> groupTeams) {
+        for (Map.Entry<String, List<Team>> groupEntry : groupTeams.entrySet()) {
+            String groupName = groupEntry.getKey();
+            List<Team> teamNames = groupEntry.getValue();
 
             for (int i = 0; i < teamNames.size(); i++) {
                 for (int j = i + 1; j < teamNames.size(); j++) {
                     Match match = new Match();
-                    match.setTeamA(teamNames.get(i));
-                    match.setTeamB(teamNames.get(j));
+                    match.setFirstTeam(teamNames.get(i));
+                    match.setSecondTeam(teamNames.get(j));
                     match.setCompetition(competition);
                     match.setGroupName(groupName);
                     matchRepository.save(match);
@@ -112,17 +122,18 @@ public class CompetitionService {
 
         // Utwórz mecze w drabince turniejowej
         List<Match> tournamentMatches = new ArrayList<>();
+        Round round = new Round();
+        round.setCompetition(competition);
+        round.setName("Runda drabinka - 1");
+        competition.getTournamentFinalRounds().add(round);
         for (TournamentMatch tournamentMatch : bracketMatches) {
-            Team teamA = findTeamByName(competition, tournamentMatch.getTeamA());
-            Team teamB = findTeamByName(competition, tournamentMatch.getTeamB());
-
-            // Utwórz nowy mecz
             Match match = new Match();
-            match.setTeamA(teamA.getName());
-            match.setTeamB(teamB.getName());
+            match.setFirstTeam(findTeamById(competition, tournamentMatch.getFirstTeam()));
+            match.setSecondTeam(findTeamById(competition, tournamentMatch.getSecondTeam()));
             match.setCompetition(competition);
-            match.setGroupName(null);  // W przypadku drabinki nie ma grup
-            match.setStatus(MatchStatus.NOT_STARTED);  // Mecz jeszcze nie został rozegrany
+            match.setGroupName(null);
+            match.setRound(round);
+            match.setStatus(MatchStatus.NOT_STARTED);
             matchRepository.save(match);
             tournamentMatches.add(match);
         }
@@ -131,11 +142,11 @@ public class CompetitionService {
     }
 
     // Pomocnicza metoda do wyszukiwania drużyny po nazwie
-    private Team findTeamByName(Competition competition, String teamName) {
+    private Team findTeamById(Competition competition, Long teamId) {
         return competition.getTeams().stream()
-                .filter(team -> team.getName().equals(teamName))
+                .filter(team -> team.getId().equals(teamId))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Team " + teamName + " not found in competition"));
+                .orElseThrow(() -> new IllegalArgumentException("Team " + teamId + " not found in competition"));
     }
 
     public void beginCompetition(Long competitionId) {
