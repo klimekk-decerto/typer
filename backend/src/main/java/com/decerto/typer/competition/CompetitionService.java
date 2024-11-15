@@ -102,8 +102,6 @@ public class CompetitionService {
     }
 
 
-    // Inne metody...
-
     public List<Match> setupTournamentBracket(Long competitionId, List<TournamentMatch> bracketMatches) {
         Competition competition = competitionRepository.findById(competitionId)
                 .orElseThrow(() -> new IllegalArgumentException("Competition not found"));
@@ -138,6 +136,14 @@ public class CompetitionService {
                 .filter(team -> team.getName().equals(teamName))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Team " + teamName + " not found in competition"));
+    }
+
+    public void beginCompetition(Long competitionId) {
+        Competition competition = competitionRepository.findById(competitionId)
+                .orElseThrow(() -> new IllegalArgumentException("Competition not found"));
+
+        competition.beginCompetition();
+
     }
 }
 

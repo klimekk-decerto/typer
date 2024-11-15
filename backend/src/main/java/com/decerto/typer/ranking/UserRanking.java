@@ -1,4 +1,4 @@
-package com.decerto.typer.competition;
+package com.decerto.typer.ranking;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

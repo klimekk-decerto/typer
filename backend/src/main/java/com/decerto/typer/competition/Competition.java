@@ -1,9 +1,13 @@
 package com.decerto.typer.competition;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
 public class Competition {
     @Id
@@ -18,46 +22,11 @@ public class Competition {
 
     @OneToMany(mappedBy = "competition", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Round> rounds;
+    private CompetitionStatus status = CompetitionStatus.CREATING;
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public CompetitionType getType() {
-        return type;
-    }
-
-    public void setType(CompetitionType type) {
-        this.type = type;
-    }
-
-    public List<Team> getTeams() {
-        return teams;
-    }
-
-    public void setTeams(List<Team> teams) {
-        this.teams = teams;
-    }
-
-    public List<Round> getRounds() {
-        return rounds;
-    }
-
-    public void setRounds(List<Round> rounds) {
-        this.rounds = rounds;
+    public void beginCompetition() {
+        this.status = CompetitionStatus.IN_PROGRESS;
     }
 }
 

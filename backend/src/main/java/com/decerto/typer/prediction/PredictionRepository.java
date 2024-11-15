@@ -1,5 +1,6 @@
-package com.decerto.typer.competition;
+package com.decerto.typer.prediction;
 
+import com.decerto.typer.competition.Match;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
