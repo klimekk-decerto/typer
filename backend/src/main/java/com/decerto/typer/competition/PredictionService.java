@@ -3,6 +3,8 @@ package com.decerto.typer.competition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class PredictionService {
@@ -21,7 +23,7 @@ public class PredictionService {
         prediction.setMatch(match);
         prediction.setPredictedScoreA(scoreA);
         prediction.setPredictedScoreB(scoreB);
-        prediction.setDraw(isDraw);
+        prediction.setIsDraw(isDraw);
 
         return predictionRepository.save(prediction);
     }

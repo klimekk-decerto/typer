@@ -24,7 +24,7 @@ public class RankingService {
                 ranking.addPoints(3); // Dokładny wynik
             } else if (match.getScoreA() > match.getScoreB() && prediction.getPredictedScoreA() > prediction.getPredictedScoreB() ||
                     match.getScoreA() < match.getScoreB() && prediction.getPredictedScoreA() < prediction.getPredictedScoreB() ||
-                    match.getScoreA().equals(match.getScoreB()) && prediction.isDraw()) {
+                    match.getScoreA().equals(match.getScoreB()) && prediction.getIsDraw()) {
                 ranking.addPoints(1); // Trafiona drużyna wygrana lub remis
             }
 
