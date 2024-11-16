@@ -55,4 +55,8 @@ export class CompetitionDashboardComponent implements OnInit {
   goBack() {
     this.router.navigate(['/dashboard']);
   }
+    predicate(body: any) {
+        let id = this.route.snapshot.params['id'];
+        this.httpClient.put('/app/api/fetch/competition/' + id + '/matches/' + body.matchId + '/predicate', {scoreA: body.scoreA, scoreB: body.scoreB}).subscribe();
+    }
 }

@@ -1,9 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {CommonModule} from "@angular/common";
-import {MatchesModel} from "../../model/competition-model";
 import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {MatButton} from "@angular/material/button";
@@ -30,6 +29,7 @@ export type Model = {
 })
 export class MatchResultComponent implements OnInit {
   @Input() matchId: number;
+  @Output() onPredicate: EventEmitter<any>;
   public formGroup: FormGroup;
 
   constructor(private router: Router,
@@ -42,6 +42,7 @@ export class MatchResultComponent implements OnInit {
       scoreB: new FormControl('')
     });
     this.matchId = 0;
+    this.onPredicate = new EventEmitter();
   }
 
   ngOnInit(): void {
@@ -49,8 +50,9 @@ export class MatchResultComponent implements OnInit {
 
 
   predicate() {
-    console.log(this.formGroup.controls['scoreA'].value);
-    console.log(this.formGroup.controls['scoreB'].value);
+    let scoreA = this.formGroup.controls['scoreA'].value;
+    let scoreB = this.formGroup.controls['scoreB'].value;
+    this.onPredicate.emit({matchId: this.matchId, scoreA, scoreB});
   }
 
 }
