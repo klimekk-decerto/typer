@@ -35,4 +35,9 @@ public class ScheduleService {
         entity.setMatchDate(matchId, date);
         return entity.toDto();
     }
+
+    public MatchEntity getMatch(long competitionId, long firstTeamId, long secondTeamId) {
+        ScheduleEntity entity = repository.findByCompetitionId(competitionId);
+        return entity.getMatch(firstTeamId, secondTeamId);
+    }
 }

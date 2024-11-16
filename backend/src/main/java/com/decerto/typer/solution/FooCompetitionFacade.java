@@ -1,7 +1,9 @@
 package com.decerto.typer.solution;
 
+import com.decerto.typer.application.requests.AssignRoundToMatchRequest;
 import com.decerto.typer.solution.competition.CompetitionEntity;
 import com.decerto.typer.solution.competition.FooCompetitionRepository;
+import com.decerto.typer.solution.schedule.MatchEntity;
 import com.decerto.typer.solution.schedule.ScheduleDto;
 import com.decerto.typer.solution.schedule.ScheduleService;
 import lombok.NonNull;
@@ -26,6 +28,12 @@ public class FooCompetitionFacade {
         List<TeamDto> teams = entity.toDto();
         ScheduleDto schedule = scheduleService.createLeagueSchedule(entity.getId(), teams);
         return new CompetitionDto(entity.getId(), teams, schedule.getRounds(), schedule.getMatches());
+    }
+
+    public CompetitionDto chooseRoundForMatch(AssignRoundToMatchRequest request) {
+        MatchEntity match = scheduleService.getMatch(request.getCompetitionId(), request.getFirstTeamId(), request.getSecondTeamId());
+        scheduleService.chooseRoundForMatch(request.getCompetitionId(), request.getRoundId(), match.getId());
+        return setMatchDate(request.getCompetitionId(), match.getId(), request.getDate());
     }
 
     public CompetitionDto chooseRoundForMatch(Long id, Long roundId, Long matchId) {

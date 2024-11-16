@@ -35,7 +35,7 @@ public class MatchEntity {
     }
 
     public MatchDto toDto() {
-        return new MatchDto(id, firstTeamId, secondTeamId, roundId, firstTeamScore, secondTeamScore);
+        return new MatchDto(id, firstTeamId, secondTeamId, roundId, firstTeamScore, secondTeamScore, date);
     }
 
     public void chooseRound(Long roundId) {

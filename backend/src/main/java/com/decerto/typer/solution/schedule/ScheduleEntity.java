@@ -17,7 +17,7 @@ import java.util.Optional;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-class ScheduleEntity {
+public class ScheduleEntity {
 
     @GeneratedValue
     @Id
@@ -76,5 +76,12 @@ class ScheduleEntity {
         return this.matches.stream()
                 .filter(match -> match.getId().equals(matchId))
                 .findFirst();
+    }
+
+    public MatchEntity getMatch(long firstTeamId, long secondTeamId) {
+        return matches.stream()
+                .filter(match -> match.getFirstTeamId().equals(firstTeamId) && match.getSecondTeamId().equals(secondTeamId))
+                .findFirst()
+                .orElseThrow();
     }
 }
