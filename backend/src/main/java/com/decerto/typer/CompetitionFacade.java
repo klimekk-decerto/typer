@@ -9,7 +9,6 @@ import com.decerto.typer.prediction.PredictionsRepository;
 import com.decerto.typer.schedule.MatchDto;
 import com.decerto.typer.schedule.ScheduleDto;
 import com.decerto.typer.schedule.ScheduleService;
-import jakarta.persistence.EntityManager;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -27,6 +26,12 @@ public class CompetitionFacade {
     private final ScheduleService scheduleService;
     private final PredictionsRepository predictionsRepository;
 
+
+    public CompetitionDto get(Long id) {
+        CompetitionEntity entity = repository.findById(id).orElseThrow();
+        ScheduleDto scheduleDto = scheduleService.get(id);
+        return toDto(entity, scheduleDto);
+    }
 
     public CompetitionDto createLeague(@NonNull String leagueName, @NonNull List<String> teamsNames) {
         CompetitionEntity entity = CompetitionEntity.ofLeague(leagueName, teamsNames);
@@ -71,9 +76,10 @@ public class CompetitionFacade {
         return toDto(entity, schedule);
     }
 
-    private static CompetitionDto toDto(CompetitionEntity entity, ScheduleDto schedule) {
+    private CompetitionDto toDto(CompetitionEntity entity, ScheduleDto schedule) {
         List<TeamDto> teams = entity.toDto();
-        return new CompetitionDto(entity.getId(), teams, schedule.getMatches());
+        Predictions predictions = predictionsRepository.findByCompetitionId(entity.getId());
+        return new CompetitionDto(entity.getId(), teams, schedule.getMatches(), getMatchesForPredicate(entity.getId()), predictions.getRank());
     }
 
     public CompetitionDto predicate(String userName, Long id, Long matchId, int scoreA, int scoreB) {
