@@ -1,11 +1,11 @@
-package com.decerto.typer.solution;
+package com.decerto.typer;
 
 import com.decerto.typer.application.requests.AssignRoundToMatchRequest;
-import com.decerto.typer.solution.competition.CompetitionEntity;
-import com.decerto.typer.solution.competition.FooCompetitionRepository;
-import com.decerto.typer.solution.schedule.MatchEntity;
-import com.decerto.typer.solution.schedule.ScheduleDto;
-import com.decerto.typer.solution.schedule.ScheduleService;
+import com.decerto.typer.competition.CompetitionEntity;
+import com.decerto.typer.competition.CompetitionRepository;
+import com.decerto.typer.schedule.MatchEntity;
+import com.decerto.typer.schedule.ScheduleDto;
+import com.decerto.typer.schedule.ScheduleService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -13,12 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Component
 @Transactional
-public class FooCompetitionFacade {
-    private final FooCompetitionRepository repository;
+public class CompetitionFacade {
+    private final CompetitionRepository repository;
     private final ScheduleService scheduleService;
 
     public CompetitionDto createLeague(@NonNull String leagueName, @NonNull List<String> teamsNames) {
@@ -26,7 +27,7 @@ public class FooCompetitionFacade {
         repository.save(entity);
 
         List<TeamDto> teams = entity.toDto();
-        ScheduleDto schedule = scheduleService.createLeagueSchedule(entity.getId(), teams);
+        ScheduleDto schedule = scheduleService.createLeagueSchedule(entity.getId());
         return new CompetitionDto(entity.getId(), teams, schedule.getRounds(), schedule.getMatches());
     }
 
@@ -54,6 +55,14 @@ public class FooCompetitionFacade {
         CompetitionEntity entity = repository.findById(id).orElseThrow();
         List<TeamDto> teams = entity.toDto();
         var schedule = scheduleService.setMatchDate(id, matchId, date);
+        return new CompetitionDto(entity.getId(), teams, schedule.getRounds(), schedule.getMatches());
+    }
+
+    public CompetitionDto createTournament(String name, Map<String, List<String>> groups) {
+        CompetitionEntity entity = CompetitionEntity.ofTournament(name, groups);
+        repository.save(entity);
+        List<TeamDto> teams = entity.toDto();
+        ScheduleDto schedule = scheduleService.createTournamentSchedule(entity.getId());
         return new CompetitionDto(entity.getId(), teams, schedule.getRounds(), schedule.getMatches());
     }
 }

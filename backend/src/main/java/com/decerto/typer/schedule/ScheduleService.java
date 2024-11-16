@@ -1,19 +1,17 @@
-package com.decerto.typer.solution.schedule;
+package com.decerto.typer.schedule;
 
-import com.decerto.typer.solution.TeamDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class ScheduleService {
     private final ScheduleRepository repository;
 
-    public ScheduleDto createLeagueSchedule(Long competitionId, List<TeamDto> teams) {
-        ScheduleEntity entity = ScheduleEntity.ofLeagueSchedule(competitionId, teams);
+    public ScheduleDto createLeagueSchedule(Long competitionId) {
+        ScheduleEntity entity = ScheduleEntity.ofLeagueSchedule(competitionId);
         repository.save(entity);
         return entity.toDto();
     }
@@ -34,6 +32,13 @@ public class ScheduleService {
         ScheduleEntity entity = repository.findByCompetitionId(id);
         entity.setMatchDate(matchId, date);
         return entity.toDto();
+    }
+
+    public ScheduleDto createTournamentSchedule(Long id) {
+        ScheduleEntity entity = ScheduleEntity.ofTournament(id);
+        repository.save(entity);
+        return entity.toDto();
+
     }
 
     public MatchEntity getMatch(long competitionId, long firstTeamId, long secondTeamId) {

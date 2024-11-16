@@ -1,44 +1,93 @@
 package com.decerto.typer;
 
-import com.decerto.typer.competition.Competition;
-import com.decerto.typer.competition.CompetitionFacade;
-import com.decerto.typer.competition.Match;
-import com.decerto.typer.competition.Team;
+import com.decerto.typer.schedule.MatchDto;
+import com.decerto.typer.schedule.RoundDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Map;
 
 @SpringBootTest
 class TyperApplicationTests {
 
     @Autowired
-    private CompetitionFacade facade;
+    CompetitionFacade sut;
+
+    @Test
+    void shouldCreateLeagueCompetitionWithTeams() {
+        List<String> teams = List.of("Polska", "Niemcy", "Anglia", "Szwajcaria");
+
+        CompetitionDto result = sut.createLeague("Puchar świata", teams);
+
+        Assertions.assertEquals(result.getTeams().stream().map(TeamDto::name).toList(), teams);
+    }
+
+    @Test
+    void shouldCreateTournamentCompetitionWithTeamsWithGroupSeparation() {
+        Map<String, List<String>> groups = Map.of(
+                "Grupa A", List.of("Polska", "Niemcy"),
+                "Grupa B", List.of("Anglia", "Szwajcaria")
+        );
+
+        CompetitionDto result = sut.createTournament("Puchar świata", groups);
+
+
+        Assertions.assertEquals(findTeamNamesForGroup(result, "Grupa A"), List.of("Polska", "Niemcy"));
+        Assertions.assertEquals(findTeamNamesForGroup(result, "Grupa B"), List.of("Anglia", "Szwajcaria"));
+    }
 
 
     @Test
-    void shouldCreateLeagueCompetitionWithCorrectNumberOfRoundsAndMatches() {
-        // given:
-        List<String> teams = List.of("Polska", "Niemcy", "Anglia", "Szwajcaria");
+    void shouldChooseRoundForMatch() {
+        List<String> teams = List.of("Polska", "Niemcy", "Anglia");
 
-        // when:
-        Competition competition = facade.createLeagueCompetition("Puchar świata", teams);
+        CompetitionDto result = sut.createLeague("Puchar świata", teams);
+        RoundDto firstRound = result.getRounds().getFirst();
+        MatchDto firstMatch = result.getMatches().getFirst();
 
-        // then:
-        List<Match> allMatches = facade.getMatches(competition.getId());
-        Assertions.assertEquals(competition.getRounds().size(), 3);
-        Assertions.assertEquals(allMatches.size(), 6);
+        CompetitionDto after = sut.chooseRoundForMatch(result.getId(), firstRound.id(), firstMatch.getMatchId());
 
+        Assertions.assertEquals(firstRound.id(), after.getMatches().getFirst().getRoundId());
     }
 
-    private static boolean anyMatchForTeams(List<Match> matches, String firstTeam, String secondTeam) {
-        return matches.stream().anyMatch(match -> teamNameEquals(match.getFirstTeam(), firstTeam) && teamNameEquals(match.getFirstTeam(), secondTeam));
+    private static List<String> findTeamNamesForGroup(CompetitionDto result, String grupaA) {
+        return result.getTeams().stream()
+                .filter(team -> team.groupName().equals(grupaA))
+                .map(TeamDto::name)
+                .toList();
     }
 
-    private static boolean teamNameEquals(Team team, String name) {
-        return team.getName().equals(name);
+    @Test
+    void shouldBeAbleToFinishMatch() {
+        List<String> teams = List.of("Polska", "Niemcy", "Anglia");
+
+        CompetitionDto result = sut.createLeague("Puchar świata", teams);
+        MatchDto firstMatch = result.getMatches().getFirst();
+
+        CompetitionDto after = sut.finishMatch(result.getId(), firstMatch.getMatchId(), 1, 3);
+
+        MatchDto match = after.getMatches().getFirst();
+        Assertions.assertEquals(1, match.getFirstTeamScore());
+        Assertions.assertEquals(3, match.getSecondTeamScore());
+    }
+
+    private boolean areTeamsCorrect(MatchDto match, Long polska, Long anglia) {
+        return match.getFirstTeamId().equals(polska) && match.getSecondTeamId().equals(anglia);
+    }
+
+    private boolean areTeamsCorrectIgnoringPosition(MatchDto match, Long polska, Long anglia) {
+        return areTeamsCorrect(match, polska, anglia) || areTeamsCorrect(match, anglia, polska);
+    }
+
+    private static Long findTeamIdByName(CompetitionDto result, String polska) {
+        return result.getTeams().stream()
+                .filter(team -> team.name().equals(polska))
+                .findFirst()
+                .map(TeamDto::id)
+                .orElseThrow();
     }
 
 }

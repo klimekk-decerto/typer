@@ -1,7 +1,7 @@
-package com.decerto.typer.solution;
+package com.decerto.typer;
 
-import com.decerto.typer.solution.schedule.MatchDto;
-import com.decerto.typer.solution.schedule.RoundDto;
+import com.decerto.typer.schedule.MatchDto;
+import com.decerto.typer.schedule.RoundDto;
 import lombok.Value;
 
 import java.util.List;

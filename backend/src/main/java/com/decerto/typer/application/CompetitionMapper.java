@@ -1,10 +1,10 @@
 package com.decerto.typer.application;
 
-import com.decerto.typer.solution.CompetitionDto;
-import com.decerto.typer.solution.TeamDto;
-import com.decerto.typer.solution.competition.CompetitionEntity;
-import com.decerto.typer.solution.competition.TeamEntity;
-import com.decerto.typer.solution.schedule.*;
+import com.decerto.typer.schedule.*;
+import com.decerto.typer.CompetitionDto;
+import com.decerto.typer.TeamDto;
+import com.decerto.typer.competition.CompetitionEntity;
+import com.decerto.typer.competition.TeamEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
