@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Map;
 
 @SpringBootTest
 class FooTyperApplicationTests {
@@ -28,12 +29,33 @@ class FooTyperApplicationTests {
     }
 
     @Test
+    void shouldCreateTournamentCompetitionWithTeamsWithGroupSeparation() {
+        Map<String, List<String>> groups = Map.of(
+                "Grupa A", List.of("Polska", "Niemcy"),
+                "Grupa B", List.of("Anglia", "Szwajcaria")
+        );
+
+        CompetitionDto result = sut.createTournament("Puchar świata", groups);
+
+
+        Assertions.assertEquals(findTeamNamesForGroup(result, "Grupa A"), List.of("Polska", "Niemcy"));
+        Assertions.assertEquals(findTeamNamesForGroup(result, "Grupa B"), List.of("Anglia", "Szwajcaria"));
+    }
+
+    @Test
     void shouldGenerateRoundsForLeagueWithDoubleMatch() {
         List<String> teams = List.of("Polska", "Niemcy", "Anglia", "Szwajcaria");
 
         CompetitionDto result = sut.createLeague("Puchar świata", teams);
 
         Assertions.assertEquals(6, result.getRounds().size());
+    }
+
+    private static List<String> findTeamNamesForGroup(CompetitionDto result, String grupaA) {
+        return result.getTeams().stream()
+                .filter(team -> team.groupName().equals(grupaA))
+                .map(TeamDto::name)
+                .toList();
     }
 
     @Test

@@ -19,8 +19,9 @@ public class TeamEntity {
     @Id
     private Long id;
     private String name;
+    private String groupName;
 
     public TeamDto toDto() {
-        return new TeamDto(id, name, null);
+        return new TeamDto(id, name, groupName);
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Component
@@ -55,5 +56,12 @@ public class FooCompetitionFacade {
         List<TeamDto> teams = entity.toDto();
         var schedule = scheduleService.setMatchDate(id, matchId, date);
         return new CompetitionDto(entity.getId(), teams, schedule.getRounds(), schedule.getMatches());
+    }
+
+    public CompetitionDto createTournament(String name, Map<String, List<String>> groups) {
+        CompetitionEntity entity = CompetitionEntity.ofTournament(name, groups);
+        List<TeamDto> teams = entity.toDto();
+
+        return new CompetitionDto(entity.getId(), teams, List.of(), List.of());
     }
 }
