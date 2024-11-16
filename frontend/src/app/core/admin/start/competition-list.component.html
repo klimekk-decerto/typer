@@ -1,10 +1,17 @@
 <div class="blank-layout-container justify-content-center align-items-center bg-light-primary">
   <div
-    class="position-relative row w-100 h-100 bg-gredient justify-content-center">
+    class="position-relative row w-100 h-100 bg-gredient">
     <div class="col-lg-4 d-flex">
       <mat-card class="cardWithShadow ">
         <mat-card-content class="p-32">
-          <div class="text-left" style="display: flex;">
+          <a (click)="goBack()" style="cursor: pointer">
+            <img src="./assets/images/svgs/go-back-arrow-svgrepo-com.svg"
+                 class="align-middle m-2" style="width: 20px"
+                 alt="logo"
+            />
+            Powrót do głównego menu
+          </a>
+          <div class="text-left" style="display: flex; margin-top: 3rem">
             <!--            <a [routerLink]="['/dashboard']">-->
             <a>
               <img src="./assets/images/svgs/list-svgrepo-com.svg"
