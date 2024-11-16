@@ -1,13 +1,12 @@
 import {Component, OnInit} from "@angular/core";
 import {MatSlideToggle} from "@angular/material/slide-toggle";
 import {MainPageService} from "./main.page.service";
-import {HttpClientModule} from "@angular/common/http";
 
 @Component({
   standalone: true,
   selector: 'main-page',
   imports: [
-    MatSlideToggle, HttpClientModule
+    MatSlideToggle
   ],
   providers: [
     MainPageService

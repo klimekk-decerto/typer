@@ -4,7 +4,7 @@ import {LoginComponent} from "./core/auth/login.component";
 import {BlankComponent} from "./core/layout/blank/blank.component";
 
 export const routes: Routes = [
-  {path: '', component: BlankComponent, pathMatch: 'full'},
+  // {path: '', component: BlankComponent},
   {
     path: '', component: BlankComponent,
     children: [
