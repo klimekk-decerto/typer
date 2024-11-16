@@ -1,5 +1,6 @@
 package com.decerto.typer;
 
+import com.decerto.typer.prediction.PredicationRank;
 import com.decerto.typer.schedule.MatchDto;
 import lombok.Value;
 
@@ -11,9 +12,11 @@ public class CompetitionDto {
 
     List<TeamDto> teams;
 
-
     List<MatchDto> matches;
 
+    List<MatchDto> matchesForPredicate;
+
+    PredicationRank predicationRank;
 
     MatchDto getMatchForce(Long id) {
         return matches.stream()

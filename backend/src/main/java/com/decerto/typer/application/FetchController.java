@@ -1,11 +1,9 @@
 package com.decerto.typer.application;
 
 import com.decerto.typer.CompetitionDetails;
-import com.decerto.typer.competition.CompetitionRepository;
 import com.decerto.typer.CompetitionDto;
-import com.decerto.typer.competition.CompetitionEntity;
-import com.decerto.typer.schedule.ScheduleEntity;
-import com.decerto.typer.schedule.ScheduleRepository;
+import com.decerto.typer.CompetitionFacade;
+import com.decerto.typer.competition.CompetitionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,14 +18,11 @@ import java.util.List;
 public class FetchController {
 
     private final CompetitionRepository competitionRepository;
-    private final ScheduleRepository scheduleRepository;
-    private final CompetitionMapper competitionMapper;
+    private final CompetitionFacade competitionFacade;
 
     @GetMapping("/competition/{id}")
     public CompetitionDto getCompetition(@PathVariable long id) {
-        CompetitionEntity competition = competitionRepository.findById(id).orElseThrow();
-        ScheduleEntity schedule = scheduleRepository.findByCompetitionId(id);
-        return competitionMapper.map(competition, schedule);
+        return competitionFacade.get(id);
     }
 
     @GetMapping("/competitions")
