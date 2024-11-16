@@ -9,6 +9,7 @@ import {MatRadioButton, MatRadioGroup} from "@angular/material/radio";
 import {NgForOf, NgIf} from "@angular/common";
 import {TournamentRestService} from "../rest/tournament.rest.service";
 import {TournamentCreate} from "../../model/tournament-create";
+import {take} from "rxjs";
 
 @Component({
   selector: 'app-form-dialog',
@@ -65,6 +66,7 @@ export class FormDialogComponent {
       groupTeams: this.map(this.groups.value)
     } as TournamentCreate;
     this.tournamentRestService.addTournament(request)
+      .pipe(take(1))
       .subscribe(tournament => this.dialogRef.close());
   }
 

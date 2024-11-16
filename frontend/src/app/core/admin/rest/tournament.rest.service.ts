@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Tournament} from "../../model/tournament";
+import {Tournament, TournamentFull} from "../../model/tournament";
 import {Observable} from "rxjs";
 import {TournamentCreate} from "../../model/tournament-create";
 
@@ -12,6 +12,10 @@ export class TournamentRestService {
 
   readTournaments(): Observable<Tournament[]> {
     return this.httpClient.get<Tournament[]>("app/api/fetch/competitions");
+  }
+
+  readTournament(id: number): Observable<TournamentFull> {
+    return this.httpClient.get<TournamentFull>("app/api/fetch/competition/"+ id);
   }
 
   addTournament(tournament: TournamentCreate): Observable<Tournament> {

@@ -29,7 +29,8 @@
             <h2 style="margin-left: 1rem; margin-top: 1.5rem;">Lista rozgrywek</h2>
           </div>
           <li *ngFor="let item of tournaments;">
-            <a mat-flat-button style="background-color: cornflowerblue" class="w-100">
+            <a mat-flat-button style="background-color: cornflowerblue" class="w-100"
+               (click)="selectedTournament(item)">
               {{ item.name }}
             </a>
           </li>
@@ -37,7 +38,8 @@
       </mat-card>
       <mat-card style="margin-left: 1rem">
         <mat-card-content class="p-32">
-
+          <app-match-creator *ngIf="activeTournament?.id"
+                             [selectedTournament]="activeTournament"></app-match-creator>
         </mat-card-content>
       </mat-card>
     </div>

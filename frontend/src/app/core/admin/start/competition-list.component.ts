@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {Tournament} from "../../model/tournament";
+import {Tournament, TournamentFull} from "../../model/tournament";
 import {MatAnchor, MatButton} from "@angular/material/button";
-import {NgForOf} from "@angular/common";
+import {NgForOf, NgIf} from "@angular/common";
 import {TournamentRestService} from "../rest/tournament.rest.service";
 import {MatCard, MatCardContent} from "@angular/material/card";
 import {Router} from "@angular/router";
+import {MatchCreatorComponent} from "../../../shared/components/match-creator/match-creator.component";
 
 @Component({
   selector: 'app-competition-list',
@@ -14,7 +15,9 @@ import {Router} from "@angular/router";
     NgForOf,
     MatAnchor,
     MatCard,
-    MatCardContent
+    MatCardContent,
+    MatchCreatorComponent,
+    NgIf
   ],
   templateUrl: 'competition-list.component.html'
 })
@@ -22,6 +25,7 @@ import {Router} from "@angular/router";
 export class CompetitionListComponent implements OnInit {
 
   public tournaments: Tournament[] = [];
+  public activeTournament: TournamentFull | null = null;
 
   constructor(private tournamentRestService: TournamentRestService, private router: Router) {
   }
@@ -45,5 +49,10 @@ export class CompetitionListComponent implements OnInit {
 
   logout() {
     this.router.navigate(['/logout']);
+  }
+
+  selectedTournament(tournament: Tournament) {
+    this.tournamentRestService.readTournament(tournament.id)
+      .subscribe((tournamentFull) => this.activeTournament = tournamentFull)
   }
 }
