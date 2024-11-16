@@ -1,5 +1,7 @@
 package com.decerto.typer.solution.competition;
 
+import com.decerto.typer.solution.CompetitionDto;
+import com.decerto.typer.solution.TeamDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +16,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-class CompetitionEntity {
+public class CompetitionEntity {
 
     @GeneratedValue
     @Id
@@ -32,7 +34,7 @@ class CompetitionEntity {
                 .toList());
     }
 
-    public CompetitionDto toDto() {
-        return new CompetitionDto(teams.stream().map(TeamEntity::toDto).toList());
+    public List<TeamDto> toDto() {
+        return teams.stream().map(TeamEntity::toDto).toList();
     }
 }

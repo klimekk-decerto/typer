@@ -1,8 +1,8 @@
 package com.decerto.typer;
 
-import com.decerto.typer.solution.competition.CompetitionDto;
+import com.decerto.typer.solution.CompetitionDto;
 import com.decerto.typer.solution.FooCompetitionFacade;
-import com.decerto.typer.solution.competition.TeamDto;
+import com.decerto.typer.solution.TeamDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +13,25 @@ import java.util.List;
 @SpringBootTest
 class FooTyperApplicationTests {
 
-	@Autowired
-	FooCompetitionFacade sut;
+    @Autowired
+    FooCompetitionFacade sut;
 
-	@Test
-	void shouldCreateLeagueCompetitionWithTeams() {
-		List<String> teams = List.of("Polska", "Niemcy", "Anglia", "Szwajcaria");
+    @Test
+    void shouldCreateLeagueCompetitionWithTeams() {
+        List<String> teams = List.of("Polska", "Niemcy", "Anglia", "Szwajcaria");
 
-		CompetitionDto result = sut.createLeague("Puchar świata", teams);
+        CompetitionDto result = sut.createLeague("Puchar świata", teams);
 
-		Assertions.assertEquals(result.getTeams().stream().map(TeamDto::name).toList(), teams);
-	}
+        Assertions.assertEquals(result.getTeams().stream().map(TeamDto::name).toList(), teams);
+    }
+
+    @Test
+    void shouldGenerateOneRoundLessThanNumberOfTeamsForLeague() {
+        List<String> teams = List.of("Polska", "Niemcy", "Anglia", "Szwajcaria");
+
+        CompetitionDto result = sut.createLeague("Puchar świata", teams);
+
+        Assertions.assertEquals(result.getRounds().size(), teams.size() - 1);
+    }
 
 }

@@ -1,4 +1,4 @@
-package com.decerto.typer.solution.competition;
+package com.decerto.typer.solution;
 
 import lombok.Value;
 
@@ -9,4 +9,5 @@ public class CompetitionDto {
 
     List<TeamDto> teams;
 
+    List<RoundDto> rounds;
 }

@@ -1,6 +1,7 @@
-package com.decerto.typer.solution.competition;
+package com.decerto.typer.solution.schedule;
 
-import com.decerto.typer.solution.TeamDto;
+import com.decerto.typer.solution.RoundDto;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -14,13 +15,16 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TeamEntity {
+class RoundEntity {
+
     @GeneratedValue
     @Id
     private Long id;
-    private String name;
+    @Column(name = "order_of_round")
+    private int order;
 
-    public TeamDto toDto() {
-        return new TeamDto(id, name, null);
+
+    public RoundDto toDto() {
+        return new RoundDto(id, order);
     }
 }
