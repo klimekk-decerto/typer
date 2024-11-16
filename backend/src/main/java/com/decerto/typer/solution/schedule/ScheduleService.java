@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -34,6 +35,13 @@ public class ScheduleService {
         ScheduleEntity entity = repository.findByCompetitionId(id);
         entity.setMatchDate(matchId, date);
         return entity.toDto();
+    }
+
+    public ScheduleDto createTournamentSchedule(Long id, Map<String, List<TeamDto>> teams, FinalStageType stageType) {
+        ScheduleEntity entity = ScheduleEntity.ofTournament(id, teams, stageType);
+        repository.save(entity);
+        return entity.toDto();
+
     }
 
     public MatchEntity getMatch(long competitionId, long firstTeamId, long secondTeamId) {

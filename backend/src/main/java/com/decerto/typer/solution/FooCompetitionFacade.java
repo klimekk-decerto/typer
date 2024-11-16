@@ -3,6 +3,7 @@ package com.decerto.typer.solution;
 import com.decerto.typer.application.requests.AssignRoundToMatchRequest;
 import com.decerto.typer.solution.competition.CompetitionEntity;
 import com.decerto.typer.solution.competition.FooCompetitionRepository;
+import com.decerto.typer.solution.schedule.FinalStageType;
 import com.decerto.typer.solution.schedule.MatchEntity;
 import com.decerto.typer.solution.schedule.ScheduleDto;
 import com.decerto.typer.solution.schedule.ScheduleService;
@@ -14,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -58,10 +61,13 @@ public class FooCompetitionFacade {
         return new CompetitionDto(entity.getId(), teams, schedule.getRounds(), schedule.getMatches());
     }
 
-    public CompetitionDto createTournament(String name, Map<String, List<String>> groups) {
+    public CompetitionDto createTournament(String name, Map<String, List<String>> groups, FinalStageType stageType) {
         CompetitionEntity entity = CompetitionEntity.ofTournament(name, groups);
         List<TeamDto> teams = entity.toDto();
-
-        return new CompetitionDto(entity.getId(), teams, List.of(), List.of());
+        Map<String, List<TeamDto>> teamsMap = teams.stream()
+                .collect(Collectors.groupingBy(map -> map.groupName(),
+                        Collectors.mapping(Function.identity(), Collectors.toList())));
+        ScheduleDto schedule = scheduleService.createTournamentSchedule(entity.getId(), teamsMap, stageType);
+        return new CompetitionDto(entity.getId(), teams, schedule.getRounds(), schedule.getMatches());
     }
 }

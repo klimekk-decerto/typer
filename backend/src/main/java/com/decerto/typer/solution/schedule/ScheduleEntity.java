@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Entity
@@ -48,6 +49,16 @@ public class ScheduleEntity {
             }
         }
         return new ScheduleEntity(null, competitionId, rounds, matches);
+    }
+
+    public static ScheduleEntity ofTournament(Long id, Map<String, List<TeamDto>> groupsMap, FinalStageType stageType) {
+        Map.Entry<String, List<TeamDto>> firstEntry = groupsMap.entrySet().stream().findFirst().orElseThrow();
+        int numberOfRoundsInGroups = firstEntry.getValue().size() - 1 + stageType.getRequiredRounds();
+        List<RoundEntity> rounds = new ArrayList<>();
+        for (int i = 1; i <= numberOfRoundsInGroups; i++) {
+            rounds.add(new RoundEntity(null, i));
+        }
+        return new ScheduleEntity(null, id, rounds, List.of());
     }
 
     public ScheduleDto toDto() {
