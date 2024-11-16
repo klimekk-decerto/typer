@@ -1,15 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {FormBuilder, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatCard, MatCardContent} from "@angular/material/card";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {CommonModule} from "@angular/common";
-import {MatActionList, MatList, MatListItem} from "@angular/material/list";
+import {MatActionList, MatList} from "@angular/material/list";
 import {CompetitionModel} from "../../model/competition-model";
 import {MatDivider} from "@angular/material/divider";
-import {MatFormField} from "@angular/material/form-field";
-import {MatInput} from "@angular/material/input";
-import {MatButton} from "@angular/material/button";
 import {MatchResultComponent} from "./match-result.component";
 
 @Component({
@@ -24,10 +21,6 @@ import {MatchResultComponent} from "./match-result.component";
         MatActionList,
         MatList,
         MatDivider,
-        MatFormField,
-        MatInput,
-        MatListItem,
-        MatButton,
         MatchResultComponent,
 
     ],
@@ -35,57 +28,24 @@ import {MatchResultComponent} from "./match-result.component";
     templateUrl: 'competition-dashboard.component.html'
 })
 export class CompetitionDashboardComponent implements OnInit {
-    public competitionModel: CompetitionModel;
+    public competitionModel: CompetitionModel | null;
 
     constructor(private router: Router,
                 private route: ActivatedRoute,
                 private fb: FormBuilder,
                 private httpClient: HttpClient) {
-
-        let model = {
-            name: 'Test',
-            id: 1,
-            matches: [{
-                firstTeamId: 1,
-                secondTeamId: 2,
-                firstTeamScore: 5,
-                secondTeamScore: 7,
-                date: '2020-10-10',
-                matchId: 0
-            },
-                {
-                    firstTeamId: 1,
-                    secondTeamId: 2,
-                    firstTeamScore: 5,
-                    secondTeamScore: 7,
-                    date: '2020-10-11',
-                    matchId: 1
-                }
-            ],
-            teams: [
-                {
-                    name: 'Polska',
-                    id: 1
-                },
-                {
-                    name: 'Holandia',
-                    id: 2
-                }
-            ]
-
-        };
-
-        this.competitionModel = model
+        this.competitionModel = null
     }
 
     getTeamById(id: number) {
-        return this.competitionModel.teams.find(team => team.id === id)?.name;
+        return this.competitionModel?.teams.find(team => team.id === id)?.name;
     }
 
     ngOnInit() {
-        // this.httpClient.get<CompetitionModel>('/app/api/fetch/competitions/' + this.route.snapshot.params.get('id')).subscribe(values => {
-        //     this.competitionModel = values;
-        // })
+        let id = this.route.snapshot.params['id'];
+        this.httpClient.get<CompetitionModel>('/app/api/fetch/competition/' + id).subscribe(values => {
+            this.competitionModel = values;
+        })
     }
 
   logout() {

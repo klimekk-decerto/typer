@@ -24,7 +24,7 @@
                     <mat-divider></mat-divider>
 
                     <mat-list>
-                        <mat-action-list *ngFor="let match of competitionModel.matches">
+                        <mat-action-list *ngFor="let match of competitionModel?.matches">
                             <h2 mat-list-item class="title">{{ match.date }}</h2>
                             <div mat-list-item class="match-container">
                                 <h2 class="team-name">{{ getTeamById(match.firstTeamId) }}</h2>
@@ -36,6 +36,6 @@
                         </mat-action-list>
                     </mat-list>
                 </mat-card-content>
-            </mat-card>
+        </mat-card>
     </div>
 </div>
