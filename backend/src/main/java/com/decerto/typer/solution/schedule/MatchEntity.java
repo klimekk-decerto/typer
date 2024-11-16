@@ -14,16 +14,15 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-class RoundEntity {
+public class MatchEntity {
 
     @GeneratedValue
     @Id
     private Long id;
-    @Column(name = "order_of_round")
-    private int order;
+    private Long firstTeamId;
+    private Long secondTeamId;
 
-
-    public RoundDto toDto() {
-        return new RoundDto(id, order);
+    public MatchDto toDto() {
+        return new MatchDto(id, firstTeamId, secondTeamId);
     }
 }

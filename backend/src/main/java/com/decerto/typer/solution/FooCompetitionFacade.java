@@ -22,6 +22,6 @@ public class FooCompetitionFacade {
 
         List<TeamDto> teams = entity.toDto();
         ScheduleDto schedule = scheduleService.createLeagueSchedule(entity.getId(), teams);
-        return new CompetitionDto(teams, schedule.getRounds());
+        return new CompetitionDto(teams, schedule.getRounds(), schedule.getMatches());
     }
 }
