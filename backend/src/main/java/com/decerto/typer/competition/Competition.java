@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -89,5 +90,14 @@ public class Competition {
                 .findFirst()
                 .ifPresent(match -> match.setResult(scoreA, scoreB));
     }
+
+    public void addRound(Round round) {
+        if (rounds == null) {
+            this.rounds = new ArrayList<>();
+        }
+        rounds.add(round);
+        round.setCompetition(this);
+    }
+
 }
 

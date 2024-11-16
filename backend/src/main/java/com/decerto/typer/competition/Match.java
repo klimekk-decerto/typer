@@ -11,14 +11,18 @@ import java.util.Optional;
 @Entity
 @Setter
 @Getter
+@Table(name = "matches")
 public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "first_team_id")
     private Team firstTeam;
-    @OneToOne
+
+    @ManyToOne
+    @JoinColumn(name = "second_team_id")
     private Team secondTeam;
 
     private Integer scoreA;

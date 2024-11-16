@@ -34,4 +34,8 @@ public class MatchService {
 
         return match;
     }
+
+    public List<Match> findByCompetitionId(Long competitionId) {
+        return matchRepository.findByCompetitionId(competitionId);
+    }
 }
