@@ -72,6 +72,9 @@ export class MatchCreatorComponent implements OnInit {
   //@ts-ignore
   @Input() config: MatchCreatorConfig ;
 
+  //@ts-ignore
+  private competitionId: number;
+
   constructor(private matchRestService: MatchRestService) {
     this.dataSource= [];
   }
@@ -90,6 +93,7 @@ export class MatchCreatorComponent implements OnInit {
 
   ngOnInit(): void {
     this.config.selectedTournament.subscribe(tournament => {
+      this.competitionId = tournament.id
       const convertedToSelectedTeam: SelectedTeam[] = tournament?.teams.map((v) => {
         return {id: v.id, name: v.name}
       }) ?? [];
@@ -116,7 +120,7 @@ export class MatchCreatorComponent implements OnInit {
 
   addMatch(): void {
     this.matchRestService.addMatch({
-      competitionId: 2,
+      competitionId: this.competitionId,
       firstTeamId: this.form.controls.firstTeamId.value,
       secondTeamId: this.form.controls.secondTeamId.value,
       date: this.form.controls.date.value
