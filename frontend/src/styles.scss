@@ -1,0 +1,24 @@
+//
+//@use '@angular/material' as mat;
+//
+//@include mat.core();
+//
+//$dark-theme: mat.define-dark-theme((
+//
+//color: (primary: mat.define-palette(mat.$pink-palette), accent: mat.define-palette(mat.$blue-grey-palette)),
+//density: -2,
+//typography: mat.define-typography-config()
+//
+////color: (
+////  theme-type: dark
+////)
+//));
+//
+//html {
+//// Apply the base theme at the root, so it will be inherited by the whole app.
+//@include mat.all-component-themes($dark-theme);
+//}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
