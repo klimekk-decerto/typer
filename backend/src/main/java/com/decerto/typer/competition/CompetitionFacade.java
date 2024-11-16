@@ -10,6 +10,7 @@ import java.util.Map;
 @Transactional
 @Service
 public class CompetitionFacade {
+
     private final CompetitionService competitionService;
     private final MatchService matchService;
 

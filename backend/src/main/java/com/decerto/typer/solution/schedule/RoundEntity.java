@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-class RoundEntity {
+public class RoundEntity {
 
     @GeneratedValue
     @Id
