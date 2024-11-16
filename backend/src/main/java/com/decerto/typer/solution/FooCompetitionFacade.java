@@ -33,4 +33,11 @@ public class FooCompetitionFacade {
         var schedule = scheduleService.chooseRoundForMatch(id, roundId, matchId);
         return new CompetitionDto(entity.getId(), teams, schedule.getRounds(), schedule.getMatches());
     }
+
+    public CompetitionDto finishMatch(Long id, Long matchId, int scoreA, int scoreB) {
+        CompetitionEntity entity = repository.findById(id).orElseThrow();
+        List<TeamDto> teams = entity.toDto();
+        var schedule = scheduleService.finishMatch(id, matchId, scoreA, scoreB);
+        return new CompetitionDto(entity.getId(), teams, schedule.getRounds(), schedule.getMatches());
+    }
 }

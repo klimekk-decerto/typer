@@ -70,6 +70,20 @@ class FooTyperApplicationTests {
         Assertions.assertEquals(firstRound.id(), after.getMatches().getFirst().getRoundId());
     }
 
+    @Test
+    void shouldBeAbleToFinishMatch() {
+        List<String> teams = List.of("Polska", "Niemcy", "Anglia");
+
+        CompetitionDto result = sut.createLeague("Puchar świata", teams);
+        MatchDto firstMatch = result.getMatches().getFirst();
+
+        CompetitionDto after = sut.finishMatch(result.getId(), firstMatch.getMatchId(), 1, 3);
+
+        MatchDto match = after.getMatches().getFirst();
+        Assertions.assertEquals(1, match.getFirstTeamScore());
+        Assertions.assertEquals(3, match.getSecondTeamScore());
+    }
+
     private boolean areTeamsCorrect(MatchDto match, Long polska, Long anglia) {
         return match.getFirstTeamId().equals(polska) && match.getSecondTeamId().equals(anglia);
     }

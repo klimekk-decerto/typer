@@ -8,4 +8,6 @@ public class MatchDto {
     Long firstTeamId;
     Long secondTeamId;
     Long roundId;
+    int firstTeamScore;
+    int secondTeamScore;
 }

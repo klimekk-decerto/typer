@@ -22,12 +22,26 @@ public class MatchEntity {
     private Long firstTeamId;
     private Long secondTeamId;
     private Long roundId;
+    private int firstTeamScore;
+    private int secondTeamScore;
+    private boolean completed;
+
+    public MatchEntity(Long firstTeamId, Long secondTeamId) {
+        this.firstTeamId = firstTeamId;
+        this.secondTeamId = secondTeamId;
+    }
 
     public MatchDto toDto() {
-        return new MatchDto(id, firstTeamId, secondTeamId, roundId);
+        return new MatchDto(id, firstTeamId, secondTeamId, roundId, firstTeamScore, secondTeamScore);
     }
 
     public void chooseRound(Long roundId) {
         this.roundId = roundId;
+    }
+
+    public void finish(int scoreA, int scoreB) {
+        this.firstTeamScore = scoreA;
+        this.secondTeamScore = scoreB;
+        this.completed = true;
     }
 }

@@ -22,4 +22,10 @@ public class ScheduleService {
         entity.chooseRoundForMatch(roundId, matchId);
         return entity.toDto();
     }
+
+    public ScheduleDto finishMatch(Long id, Long matchId, int scoreA, int scoreB) {
+        ScheduleEntity entity = repository.findByCompetitionId(id);
+        entity.finishMatch(matchId, scoreA, scoreB);
+        return entity.toDto();
+    }
 }

@@ -40,7 +40,7 @@ class ScheduleEntity {
         for (int i = 0; i < teams.size(); i++) {
             for (int j = 0; j < teams.size(); j++) {
                 if (i != j) {
-                    MatchEntity match = new MatchEntity(null, teams.get(i).id(), teams.get(j).id(), null);
+                    MatchEntity match = new MatchEntity(teams.get(i).id(), teams.get(j).id());
                     matches.add(match);
                 }
             }
@@ -60,5 +60,12 @@ class ScheduleEntity {
                 .filter(match -> match.getId().equals(matchId))
                 .findFirst()
                 .ifPresent(match -> match.chooseRound(roundId));
+    }
+
+    public void finishMatch(Long matchId, int scoreA, int scoreB) {
+        this.matches.stream()
+                .filter(match -> match.getId().equals(matchId))
+                .findFirst()
+                .ifPresent(match -> match.finish(scoreA, scoreB));
     }
 }
