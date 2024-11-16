@@ -22,15 +22,17 @@
                 <mat-card-content class="p-32">
                     <h1>Lista meczy</h1>
                     <mat-divider></mat-divider>
+
                     <mat-list>
                         <mat-action-list *ngFor="let match of competitionModel.matches">
-                          <h2 mat-list-item class="title">{{match.date}}</h2>
-                          <div mat-list-item class="match-container">
-                            <h2 class="team-name">{{getTeamById(match.firstTeamId)}}</h2>
-                            <h2 class="result">{{match.firstTeamScore}} : {{match.secondTeamScore}}</h2>
-                            <h2 class="team-name">{{getTeamById(match.secondTeamId)}}</h2>
-                          </div>
-                          <mat-divider mat-list-item></mat-divider>
+                            <h2 mat-list-item class="title">{{ match.date }}</h2>
+                            <div mat-list-item class="match-container">
+                                <h2 class="team-name">{{ getTeamById(match.firstTeamId) }}</h2>
+                                <h2 class="result">{{ match.firstTeamScore }} : {{ match.secondTeamScore }}</h2>
+                                <h2 class="team-name">{{ getTeamById(match.secondTeamId) }}</h2>
+                            </div>
+                            <app-match-result [matchId]="match.matchId"></app-match-result>
+                            <mat-divider mat-list-item></mat-divider>
                         </mat-action-list>
                     </mat-list>
                 </mat-card-content>

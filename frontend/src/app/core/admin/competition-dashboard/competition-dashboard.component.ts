@@ -1,12 +1,16 @@
 import {Component, OnInit} from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatCard, MatCardContent} from "@angular/material/card";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {CommonModule} from "@angular/common";
-import {MatActionList, MatList} from "@angular/material/list";
+import {MatActionList, MatList, MatListItem} from "@angular/material/list";
 import {CompetitionModel} from "../../model/competition-model";
 import {MatDivider} from "@angular/material/divider";
+import {MatFormField} from "@angular/material/form-field";
+import {MatInput} from "@angular/material/input";
+import {MatButton} from "@angular/material/button";
+import {MatchResultComponent} from "./match-result.component";
 
 @Component({
     selector: 'app-dashboard',
@@ -20,6 +24,11 @@ import {MatDivider} from "@angular/material/divider";
         MatActionList,
         MatList,
         MatDivider,
+        MatFormField,
+        MatInput,
+        MatListItem,
+        MatButton,
+        MatchResultComponent,
 
     ],
     styleUrls: ['competition-dashboard.component.scss'],
@@ -30,8 +39,10 @@ export class CompetitionDashboardComponent implements OnInit {
 
     constructor(private router: Router,
                 private route: ActivatedRoute,
+                private fb: FormBuilder,
                 private httpClient: HttpClient) {
-        this.competitionModel = {
+
+        let model = {
             name: 'Test',
             id: 1,
             matches: [{
@@ -48,20 +59,23 @@ export class CompetitionDashboardComponent implements OnInit {
                     firstTeamScore: 5,
                     secondTeamScore: 7,
                     date: '2020-10-11',
-                    matchId: 0
+                    matchId: 1
                 }
             ],
             teams: [
                 {
-                name: 'Polska',
-                id: 1
+                    name: 'Polska',
+                    id: 1
                 },
                 {
                     name: 'Holandia',
                     id: 2
                 }
             ]
-        }
+
+        };
+
+        this.competitionModel = model
     }
 
     getTeamById(id: number) {
