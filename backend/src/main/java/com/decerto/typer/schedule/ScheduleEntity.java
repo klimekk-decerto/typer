@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,9 +57,10 @@ public class ScheduleEntity {
     }
 
 
-    public void addMatch(CreateMatchRequest request) {
+    public MatchEntity addMatch(CreateMatchRequest request) {
         MatchEntity match = new MatchEntity(request.getFirstTeamId(), request.getSecondTeamId(), request.getDate());
         matches.add(match);
+        return match;
     }
 
     public void removeMatch(Long matchId) {
@@ -66,5 +68,12 @@ public class ScheduleEntity {
                 .filter(match -> match.getId().equals(matchId))
                 .findFirst()
                 .ifPresent(matches::remove);
+    }
+
+    public boolean isMatchStarted(Long matchId, LocalDateTime now) {
+        return findMatch(matchId)
+                .map(match -> match.getDate())
+                .map(date -> now.isAfter(date))
+                .orElse(false);
     }
 }

@@ -100,6 +100,93 @@ class TyperApplicationTests {
         Assertions.assertEquals(3, match.getSecondTeamScore());
     }
 
+    @Test
+    void shouldBeAbleToPredicateMatchAndGetPointsForCorrectAnswerAfterFinishMatch() {
+        List<String> teams = List.of("Polska", "Niemcy", "Anglia");
+
+        CompetitionDto competition = sut.createLeague("Puchar świata", teams);
+        MatchDto firstMatch = sut.createMatch(CreateMatchRequest.builder()
+                .competitionId(competition.getId())
+                .date(LocalDateTime.now().plusHours(1))
+                .firstTeamId(findTeamIdByName(competition, "Polska"))
+                .secondTeamId(findTeamIdByName(competition, "Niemcy"))
+                .build()).getMatches().getFirst();
+
+        sut.predicate("user", competition.getId(), firstMatch.getMatchId(), 1, 3);
+
+
+        CompetitionDto after = sut.finishMatch(competition.getId(), firstMatch.getMatchId(), 1, 3);
+
+        Assertions.assertEquals(3, sut.getRanking(competition.getId()).getParticipants().getFirst().getPoints());
+    }
+
+    @Test
+    void shouldUserGetPointsForExactPredicateAndPredicateWinner() {
+        List<String> teams = List.of("Polska", "Niemcy", "Anglia");
+
+        CompetitionDto competition = sut.createLeague("Puchar świata", teams);
+        Long firstMatch = createMatchWithDate(competition, LocalDateTime.now().plusHours(1));
+        Long secondMatch = createMatchWithDate(competition, LocalDateTime.now().plusHours(1));
+        Long thirdMatch = createMatchWithDate(competition, LocalDateTime.now().plusHours(1));
+        Long fourthMatch = createMatchWithDate(competition, LocalDateTime.now().plusHours(1));
+        Long fifthMatch = createMatchWithDate(competition, LocalDateTime.now().plusHours(1));
+
+        sut.predicate("user", competition.getId(), firstMatch, 1, 3);
+        sut.predicate("user", competition.getId(), secondMatch, 5, 2);
+        sut.predicate("user", competition.getId(), thirdMatch, 1, 1);
+        sut.predicate("user", competition.getId(), fourthMatch, 3, 3);
+        sut.predicate("user", competition.getId(), fifthMatch, 0, 1);
+
+
+        sut.finishMatch(competition.getId(), firstMatch, 1, 3); // 3
+        sut.finishMatch(competition.getId(), secondMatch, 3, 2); // 1
+        sut.finishMatch(competition.getId(), thirdMatch, 2, 2); // 1
+        sut.finishMatch(competition.getId(), fourthMatch, 3, 3); // 3
+        sut.finishMatch(competition.getId(), fifthMatch, 10, 0); // 0
+
+        Assertions.assertEquals(8, sut.getRanking(competition.getId()).getParticipants().getFirst().getPoints());
+    }
+
+    @Test
+    void shouldNotBeAbleToPredicateStartedMatch() {
+        List<String> teams = List.of("Polska", "Niemcy", "Anglia");
+
+        CompetitionDto competition = sut.createLeague("Puchar świata", teams);
+        Long firstMatch = createMatchWithDate(competition, LocalDateTime.now().minusHours(1));
+
+        Assertions.assertThrows(IllegalStateException.class, () -> sut.predicate("user", competition.getId(), firstMatch, 1, 3));
+    }
+
+    @Test
+    void shouldUserGetListOfMatchesToPredicate() {
+        List<String> teams = List.of("Polska", "Niemcy", "Anglia");
+
+        CompetitionDto competition = sut.createLeague("Puchar świata", teams);
+        Long firstMatch = createMatchWithDate(competition, LocalDateTime.now().plusHours(1));
+        Long secondMatch = createMatchWithDate(competition, LocalDateTime.now().plusHours(1));
+        Long thirdMatch = createMatchWithDate(competition, LocalDateTime.now().plusHours(1));
+
+        sut.predicate("user", competition.getId(), firstMatch, 1, 3);
+        sut.predicate("user", competition.getId(), secondMatch, 5, 2);
+
+
+        var afterFinish = sut.finishMatch(competition.getId(), firstMatch, 1, 3);
+
+        Assertions.assertEquals(
+                List.of(afterFinish.getMatchForce(secondMatch), afterFinish.getMatchForce(thirdMatch)),
+                sut.getMatchesForPredicate(competition.getId()));
+    }
+
+
+    private Long createMatchWithDate(CompetitionDto competition, LocalDateTime now) {
+        return sut.createMatch(CreateMatchRequest.builder()
+                .competitionId(competition.getId())
+                .date(now)
+                .firstTeamId(findTeamIdByName(competition, "Polska"))
+                .secondTeamId(findTeamIdByName(competition, "Niemcy"))
+                .build()).getMatches().getLast().getMatchId();
+    }
+
     private static List<String> findTeamNamesForGroup(CompetitionDto result, String grupaA) {
         return result.getTeams().stream()
                 .filter(team -> team.groupName().equals(grupaA))
