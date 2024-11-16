@@ -49,4 +49,8 @@ export class Dashboard implements OnInit {
     goToTournaments(id: number) {
         this.router.navigate(['/dashboard/' + id]);
     }
+
+  logout() {
+    this.router.navigate(['/logout']);
+  }
 }

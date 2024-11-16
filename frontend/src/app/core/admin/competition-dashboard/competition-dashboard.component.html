@@ -4,6 +4,21 @@
     >
         <div class="col-lg-4 d-flex align-items-center">
             <mat-card class="cardWithShadow boxed-auth">
+              <div style="display:inline;">
+                <a (click)="logout()">
+                  <img src="./assets/images/svgs/logout-8.svg"
+                       class="align-middle m-2"
+                       style="width: 20px; float: right; margin-top: 0.5rem !important; margin-right: 0.5rem !important; cursor: pointer;"
+                       alt="logo"/>
+                </a>
+                <a (click)="goBack()" style="cursor: pointer">
+                  <img src="./assets/images/svgs/go-back-arrow-svgrepo-com.svg"
+                       class="align-middle m-2" style="width: 20px; float: left;  margin-top: 0.5rem !important; margin-left: 0.5rem !important;"
+                       alt="logo"
+                  />
+                </a>
+              </div>
+
                 <mat-card-content class="p-32">
                     <h1>Lista meczy</h1>
                     <mat-list>

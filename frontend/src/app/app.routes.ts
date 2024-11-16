@@ -5,6 +5,7 @@ import {MainPageComponent} from "./core/admin/main-page/main-page.component";
 import {CompetitionListComponent} from "./core/admin/start/competition-list.component";
 import {Dashboard} from "./core/admin/dashboard/dashboard.component";
 import {CompetitionDashboardComponent} from "./core/admin/competition-dashboard/competition-dashboard.component";
+import {LogoutComponent} from "./core/auth/logout.component";
 
 export const routes: Routes = [
   // {path: '', component: BlankComponent},
@@ -14,6 +15,10 @@ export const routes: Routes = [
       {
         path: 'login',
         component: LoginComponent
+      },
+      {
+        path: 'logout',
+        component: LogoutComponent
       },
       {
         path: 'admin-dashboard',
