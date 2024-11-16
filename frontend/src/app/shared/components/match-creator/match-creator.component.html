@@ -1,0 +1,93 @@
+<mat-card class="cardWithShadow ">
+  <mat-card-content class="p-32">
+    <table class="example-table mat-elevation-z8" mat-table recycleRows [dataSource]="dataSource">
+     <ng-container matColumnDef="firstTeamName">
+        <th mat-header-cell *matHeaderCellDef>Pierwsza drużuna</th>
+        <td mat-cell *matCellDef="let element"> {{element.firstTeamName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="secondTeamName">
+        <th mat-header-cell *matHeaderCellDef>Druga drużyna</th>
+        <td mat-cell *matCellDef="let element"> {{element?.secondTeamName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>Data</th>
+        <td mat-cell *matCellDef="let element"> {{element?.date}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="firstTeamResult">
+        <th mat-header-cell *matHeaderCellDef>Wynik pierwszej drużyny</th>
+        <td mat-cell *matCellDef="let element"> {{element?.firstTeamResult}} </td>
+      </ng-container>
+
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="secondTeamResult">
+        <th mat-header-cell *matHeaderCellDef>Wynik drugej drużyny</th>
+        <td mat-cell *matCellDef="let element"> {{element?.secondTeamResult}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-card-content>
+</mat-card>
+<mat-card class="cardWithShadow ">
+  <mat-card-content class="p-32">
+
+
+    <form class="m-t-30" [formGroup]="form">
+      <mat-form-field>
+        <mat-label>Pierwsza druzyna</mat-label>
+        <!--      <mat-select [(ngModel)]="firstTeam" name="firstTeam">-->
+        <mat-select formControlName="firstTeamId">
+          @for (team of teams1; track team) {
+          <mat-option [value]="team.id">{{team.name}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Druga druzyna</mat-label>
+        <!--      <mat-select [(ngModel)]="firstTeam" name="firstTeam">-->
+        <mat-select formControlName="secondTeamId">
+          @for (team of teams2; track team) {
+          <mat-option [value]="team.id">{{team.name}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <label for="dageSingle">Single will reset</label>/
+      <!--                  <input name="dateSingle"-->
+      <!--                         formControlName="dateSingle"-->
+      <input name="dateSingle"
+             [owlDateTime]="dateSingle"
+             placeholder="YYYY-MM-DD"
+             [owlDateTimeTrigger]="dateSingle"
+             formControlName="date"
+             class="form-control"
+             [selectMode]="'single'"/>
+
+      <owl-date-time [firstDayOfWeek]="1"
+                     #dateSingle></owl-date-time>
+
+      <!--      <mat-form-field class="example-full-width">-->
+
+      <!--        <mat-label>Wynik Perwszej drużyny</mat-label>-->
+      <!--        <input type="text" matInput/>-->
+
+      <!--      </mat-form-field>-->
+
+      <!--      <mat-form-field class="example-full-width">-->
+
+      <!--        <mat-label>Wynik Drugej drużyny drużyny</mat-label>-->
+      <!--        <input type="text" matInput/>-->
+
+      <!--      </mat-form-field>-->
+    </form>
+    <button mat-fab extended (click)="addMatch()">
+      Dodaj
+    </button>
+    <br/>
+  </mat-card-content>
+</mat-card>
+
