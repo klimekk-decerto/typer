@@ -1,11 +1,13 @@
 package com.decerto.typer.competition;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+@Transactional
 @Service
 public class CompetitionFacade {
     private final CompetitionService competitionService;
@@ -19,6 +21,10 @@ public class CompetitionFacade {
 
     public Competition createLeagueCompetition(String name, List<String> teamNames) {
         return competitionService.createLeagueCompetition(name, teamNames);
+    }
+
+    public List<Match> getMatches(Long competitionId) {
+        return matchService.findByCompetitionId(competitionId);
     }
 
     public Competition createTournamentCompetition(String name, Map<String, List<String>> groupTeams) {

@@ -39,25 +39,21 @@ public class CompetitionService {
 
     private void generateLeagueSchedule(Competition competition) {
         List<Team> teams = competition.getTeams();
-        int totalRounds = 2 * (teams.size() - 1);
+        // Generowanie całej ligi => *2
+        int totalRounds = (teams.size() - 1);
 
         for (int roundNumber = 1; roundNumber <= totalRounds; roundNumber++) {
             Round round = new Round();
             round.setName("Runda " + roundNumber);
-            round.setCompetition(competition);
+            competition.addRound(round);
 
             for (int i = 0; i < teams.size() / 2; i++) {
                 int teamAIndex = (roundNumber + i) % teams.size();
                 int teamBIndex = (teams.size() - 1 - i + roundNumber) % teams.size();
 
                 Match match = new Match();
-                if (roundNumber % 2 == 0) {
-                    match.setFirstTeam(teams.get(teamAIndex));
-                    match.setSecondTeam(teams.get(teamBIndex));
-                } else {
-                    match.setSecondTeam(teams.get(teamAIndex));
-                    match.setFirstTeam(teams.get(teamBIndex));
-                }
+                match.setFirstTeam(teams.get(teamAIndex));
+                match.setSecondTeam(teams.get(teamBIndex));
                 match.setCompetition(competition);
                 matchRepository.save(match);
             }
