@@ -1,0 +1,18 @@
+<div class="blank-layout-container justify-content-center align-items-center bg-light-primary">
+    <div
+            class="position-relative row w-100 h-100 bg-gredient justify-content-center"
+    >
+        <div class="col-lg-4 d-flex align-items-center">
+            <mat-card class="cardWithShadow boxed-auth">
+                <mat-card-content class="p-32">
+                    <h1>Lista rozgrywek</h1>
+                    <mat-list>
+                        <mat-action-list *ngFor="let tournament of tournaments">
+                            <button mat-list-item (click)="goToTournaments(tournament.id)">{{ tournament.name }}</button>
+                        </mat-action-list>
+                    </mat-list>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+</div>
