@@ -1,8 +1,7 @@
 package com.decerto.typer.application;
 
-import com.decerto.typer.application.requests.AssignRoundToMatchRequest;
+import com.decerto.typer.application.requests.CreateMatchRequest;
 import com.decerto.typer.application.requests.CreateLeagueCompetitionRequest;
-import com.decerto.typer.competition.Competition;
 import com.decerto.typer.CompetitionDto;
 import com.decerto.typer.CompetitionFacade;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +22,13 @@ public class CompetitionController {
     }
 
     @PutMapping("league/assign-round")
-    public CompetitionDto assignRoundToLeague(@RequestBody AssignRoundToMatchRequest request) {
-        return competitionFacade.chooseRoundForMatch(request);
+    public CompetitionDto createMatch(@RequestBody CreateMatchRequest request) {
+        return competitionFacade.createMatch(request);
+    }
+
+    @DeleteMapping("{id}/matches/{matchId}")
+    public CompetitionDto deleteMatch(@PathVariable Long id, @PathVariable Long matchId) {
+        return competitionFacade.deleteMatch(id, matchId);
     }
 
 //    @PostMapping("tournament")
