@@ -29,7 +29,7 @@ public class SecurityConfig {
         http.csrf().disable()
                 .authorizeRequests()
                 .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()  // Rejestracja dostępna publicznie
-                .requestMatchers(HttpMethod.GET, "/auth/login").permitAll()     // Logowanie dostępne publicznie
+                .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()     // Logowanie dostępne publicznie
                 .requestMatchers("/admin/**").hasRole("ADMIN")                 // Dostęp do /admin tylko dla ADMIN
                 .anyRequest().authenticated()                                 // Pozostałe endpointy wymagają autentykacji
                 .and()
