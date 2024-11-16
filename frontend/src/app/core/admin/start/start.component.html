@@ -1,0 +1,12 @@
+<button mat-raised-button color="primary"
+        (click)="startNewTournament()"
+        style="margin-top: 3rem;">
+    Utwórz nowe rozgrywki
+</button>
+<div style="margin-top: 2rem;">Lista rozgrywek</div>
+<div style="margin-top: 1rem;"
+     *ngFor="let tournament of tournaments">
+  <div>
+    <button mat-stroked-button color="primary" (click)="reviewTournament(tournament)">{{tournament.name}}</button>
+  </div>
+</div>

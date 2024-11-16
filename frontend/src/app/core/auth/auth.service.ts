@@ -15,8 +15,8 @@ export class AuthService {
   //   return this.http.get('https://dog.ceo/api/breeds/image/random').subscribe();
   // }
   login() {
-    const login = 'user_1';
-    const password = 'user_1';
+    const login = 'admin';
+    const password = 'admin';
 
     // console.log("ssss");
     // const httpOptions = {
