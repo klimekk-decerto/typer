@@ -1,12 +1,13 @@
 package com.decerto.typer;
 
+import com.decerto.typer.application.requests.CreateMatchRequest;
 import com.decerto.typer.schedule.MatchDto;
-import com.decerto.typer.schedule.RoundDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -41,16 +42,62 @@ class TyperApplicationTests {
 
 
     @Test
-    void shouldChooseRoundForMatch() {
+    void shouldCreateMatchForLeague() {
         List<String> teams = List.of("Polska", "Niemcy", "Anglia");
 
-        CompetitionDto result = sut.createLeague("Puchar świata", teams);
-        RoundDto firstRound = result.getRounds().getFirst();
+        CompetitionDto competition = sut.createLeague("Puchar świata", teams);
+
+        LocalDateTime now = LocalDateTime.now();
+        CompetitionDto result = sut.createMatch(CreateMatchRequest.builder()
+                .competitionId(competition.getId())
+                .date(now)
+                .firstTeamId(findTeamIdByName(competition, "Polska"))
+                .secondTeamId(findTeamIdByName(competition, "Niemcy"))
+                .build());
+
         MatchDto firstMatch = result.getMatches().getFirst();
+        Assertions.assertEquals(now, firstMatch.getDate());
+        Assertions.assertEquals(findTeamIdByName(competition, "Polska"), firstMatch.getFirstTeamId());
+        Assertions.assertEquals(findTeamIdByName(competition, "Niemcy"), firstMatch.getSecondTeamId());
+    }
 
-        CompetitionDto after = sut.chooseRoundForMatch(result.getId(), firstRound.id(), firstMatch.getMatchId());
 
-        Assertions.assertEquals(firstRound.id(), after.getMatches().getFirst().getRoundId());
+    @Test
+    void shouldDeleteMatch() {
+        List<String> teams = List.of("Polska", "Niemcy", "Anglia");
+
+        CompetitionDto competition = sut.createLeague("Puchar świata", teams);
+
+        LocalDateTime now = LocalDateTime.now();
+        MatchDto firstMatch = sut.createMatch(CreateMatchRequest.builder()
+                .competitionId(competition.getId())
+                .date(now)
+                .firstTeamId(findTeamIdByName(competition, "Polska"))
+                .secondTeamId(findTeamIdByName(competition, "Niemcy"))
+                .build()).getMatches().getFirst();
+
+        CompetitionDto result = sut.deleteMatch(competition.getId(), firstMatch.getMatchId());
+
+        Assertions.assertTrue(result.getMatches().isEmpty());
+    }
+
+    @Test
+    void shouldBeAbleToFinishMatch() {
+        List<String> teams = List.of("Polska", "Niemcy", "Anglia");
+
+        CompetitionDto competition = sut.createLeague("Puchar świata", teams);
+        MatchDto firstMatch = sut.createMatch(CreateMatchRequest.builder()
+                .competitionId(competition.getId())
+                .date(LocalDateTime.now())
+                .firstTeamId(findTeamIdByName(competition, "Polska"))
+                .secondTeamId(findTeamIdByName(competition, "Niemcy"))
+                .build()).getMatches().getFirst();
+
+        CompetitionDto after = sut.finishMatch(competition.getId(), firstMatch.getMatchId(), 1, 3);
+
+        MatchDto match = after.getMatches().getFirst();
+        Assertions.assertEquals(1, match.getFirstTeamScore());
+        Assertions.assertEquals(3, match.getSecondTeamScore());
     }
 
     private static List<String> findTeamNamesForGroup(CompetitionDto result, String grupaA) {
@@ -58,20 +105,6 @@ class TyperApplicationTests {
                 .filter(team -> team.groupName().equals(grupaA))
                 .map(TeamDto::name)
                 .toList();
-    }
-
-    @Test
-    void shouldBeAbleToFinishMatch() {
-        List<String> teams = List.of("Polska", "Niemcy", "Anglia");
-
-        CompetitionDto result = sut.createLeague("Puchar świata", teams);
-        MatchDto firstMatch = result.getMatches().getFirst();
-
-        CompetitionDto after = sut.finishMatch(result.getId(), firstMatch.getMatchId(), 1, 3);
-
-        MatchDto match = after.getMatches().getFirst();
-        Assertions.assertEquals(1, match.getFirstTeamScore());
-        Assertions.assertEquals(3, match.getSecondTeamScore());
     }
 
     private boolean areTeamsCorrect(MatchDto match, Long polska, Long anglia) {

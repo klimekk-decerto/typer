@@ -1,9 +1,8 @@
 package com.decerto.typer.schedule;
 
+import com.decerto.typer.application.requests.CreateMatchRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
@@ -16,23 +15,14 @@ public class ScheduleService {
         return entity.toDto();
     }
 
-    public ScheduleDto chooseRoundForMatch(Long id, Long roundId, Long matchId) {
-        ScheduleEntity entity = repository.findByCompetitionId(id);
-        entity.chooseRoundForMatch(roundId, matchId);
-        return entity.toDto();
-    }
 
     public ScheduleDto finishMatch(Long id, Long matchId, int scoreA, int scoreB) {
         ScheduleEntity entity = repository.findByCompetitionId(id);
         entity.finishMatch(matchId, scoreA, scoreB);
+        repository.save(entity);
         return entity.toDto();
     }
 
-    public ScheduleDto setMatchDate(Long id, Long matchId, LocalDateTime date) {
-        ScheduleEntity entity = repository.findByCompetitionId(id);
-        entity.setMatchDate(matchId, date);
-        return entity.toDto();
-    }
 
     public ScheduleDto createTournamentSchedule(Long id) {
         ScheduleEntity entity = ScheduleEntity.ofTournament(id);
@@ -41,8 +31,17 @@ public class ScheduleService {
 
     }
 
-    public MatchEntity getMatch(long competitionId, long firstTeamId, long secondTeamId) {
-        ScheduleEntity entity = repository.findByCompetitionId(competitionId);
-        return entity.getMatch(firstTeamId, secondTeamId);
+
+    public ScheduleDto createMatch(CreateMatchRequest request) {
+        ScheduleEntity entity = repository.findByCompetitionId(request.getCompetitionId());
+        entity.addMatch(request);
+        repository.save(entity);
+        return entity.toDto();
+    }
+
+    public ScheduleDto deleteMatch(Long id, Long matchId) {
+        ScheduleEntity entity = repository.findByCompetitionId(id);
+        entity.removeMatch(matchId);
+        return entity.toDto();
     }
 }

@@ -28,18 +28,16 @@ public class MatchEntity {
     private boolean completed;
     private LocalDateTime date;
 
-    public MatchEntity(Long firstTeamId, Long secondTeamId) {
+    public MatchEntity(Long firstTeamId, Long secondTeamId, LocalDateTime date) {
         this.firstTeamId = firstTeamId;
         this.secondTeamId = secondTeamId;
+        this.date = date;
     }
 
     public MatchDto toDto() {
-        return new MatchDto(id, firstTeamId, secondTeamId, roundId, firstTeamScore, secondTeamScore, date);
+        return new MatchDto(id, firstTeamId, secondTeamId, firstTeamScore, secondTeamScore, date);
     }
 
-    public void chooseRound(Long roundId) {
-        this.roundId = roundId;
-    }
 
     public void finish(int scoreA, int scoreB) {
         this.firstTeamScore = scoreA;
@@ -47,7 +45,5 @@ public class MatchEntity {
         this.completed = true;
     }
 
-    public void setMatchDate(LocalDateTime date) {
-        this.date = date;
-    }
+
 }

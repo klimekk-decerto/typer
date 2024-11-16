@@ -1,6 +1,5 @@
 package com.decerto.typer.application;
 
-import com.decerto.typer.competition.Competition;
 import com.decerto.typer.competition.CompetitionRepository;
 import com.decerto.typer.CompetitionDto;
 import com.decerto.typer.competition.CompetitionEntity;
