@@ -11,7 +11,6 @@ export class UserDataService {
 
   //@ts-ignore
   getToken(): string | null {
-    console.log(this.platformId)
     if(isPlatformBrowser(this.platformId)){
       //@ts-ignore
       return this.document.defaultView?.localStorage?.getItem("token");

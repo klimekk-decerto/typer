@@ -7,9 +7,6 @@ export class MainPageService {
   constructor(private http: HttpClient) {
   }
 
-  test() {
-    return this.http.get('https://dog.ceo/api/breeds/image/random').subscribe();
-  }
   test2() {
     // console.log("ssss");
     // const httpOptions = {

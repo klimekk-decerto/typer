@@ -15,13 +15,13 @@
             </a>
           </div>
 
-          <form class="m-t-30">
+          <form class="m-t-30" [formGroup]="form">
             <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block"
             >Username
             </mat-label
             >
             <mat-form-field appearance="outline" class="w-100" color="primary">
-              <input matInput [name]="'uname'"/>
+              <input matInput formControlName="uname"/>
             </mat-form-field>
             <!-- password -->
             <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block"
@@ -29,20 +29,17 @@
             </mat-label
             >
             <mat-form-field appearance="outline" class="w-100" color="primary">
-              <input matInput type="password" [name]="'password'"/>
+              <input matInput type="password" formControlName="password"/>
             </mat-form-field>
 
-            <div class="d-flex align-items-center m-b-12">
-              <mat-checkbox color="primary">Remember this Device</mat-checkbox>
-              <a class="text-primary f-w-600 text-decoration-none m-l-auto f-s-14">Forgot Password ?</a>
-            </div>
-            <a mat-flat-button color="primary" class="w-100">
+
+            <a mat-flat-button color="primary" class="w-100" (click)="submit()">
               Sign In
             </a>
             <!-- input -->
           </form>
           <span class="d-block f-w-500 text-center m-t-24"
-          >New to Modernize?
+          >
             <!--              [routerLink]="['/authentication/register']"-->
             <a
 

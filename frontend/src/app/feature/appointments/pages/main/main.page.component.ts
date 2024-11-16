@@ -23,7 +23,5 @@ export class MainPageComponent implements OnInit {
 
   toogle() {
     console.log("sssss")
-    this.mainPageService.test()
-    this.mainPageService.test2()
   }
 }

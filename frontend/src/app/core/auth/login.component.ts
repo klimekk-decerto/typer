@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormControl, FormGroup, FormsModule, Validators} from "@angular/forms";
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatCheckbox} from "@angular/material/checkbox";
 import {MatCard, MatCardContent} from "@angular/material/card";
@@ -14,6 +14,7 @@ import {MainPageService} from "../../feature/appointments/pages/main/main.page.s
   selector: 'app-login',
   imports: [
     FormsModule,
+    ReactiveFormsModule,
     MatFormField,
     MatLabel,
     MatCheckbox,
@@ -23,12 +24,12 @@ import {MainPageService} from "../../feature/appointments/pages/main/main.page.s
     MatInput,
     MatAnchor
   ],
-  providers: [AuthService, MainPageService],
+  providers: [AuthService],
   templateUrl: './login.component.html',
 })
 export class LoginComponent implements OnInit{
 
-  constructor(private router: Router, private authService: AuthService, private mainPageService: MainPageService) {
+  constructor(private router: Router, private authService: AuthService) {
 
   }
 
@@ -37,20 +38,18 @@ export class LoginComponent implements OnInit{
     password: new FormControl('', [Validators.required]),
   });
 
-  get f() {
-    return this.form.controls;
-  }
-
   submit() {
-
-    console.log(this.form.value);
-    // this.router.navigate(['/']);
+    // @ts-ignore
+    this.authService.login(this.form.controls.uname.value, this.form.controls.password.value).subscribe((role) => {
+      if (role === 'ADMIN') {
+        this.router.navigate(['admin-dashboard']);
+      } else {
+        this.router.navigate(['user-dashboard']);
+      }
+    })
   }
 
   ngOnInit(): void {
-    this.mainPageService.test()
-    // this.mainPageService.test2()
-    // this.authService.test();
-    this.authService.login()
+
   }
 }
