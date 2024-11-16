@@ -1,9 +1,13 @@
 <div class="blank-layout-container justify-content-center align-items-center bg-light-primary">
-    <div
-            class="position-relative row w-100 h-100 bg-gredient justify-content-center"
-    >
+    <div class="position-relative row w-100 h-100 bg-gredient justify-content-center">
         <div class="col-lg-4 d-flex align-items-center">
             <mat-card class="cardWithShadow boxed-auth">
+              <a (click)="logout()">
+                <img src="./assets/images/svgs/logout-8.svg"
+                     class="align-middle m-2"
+                     style="width: 20px; float: right; margin-top: 0.5rem !important; margin-right: 0.5rem !important; cursor: pointer;"
+                     alt="logo"/>
+              </a>
                 <mat-card-content class="p-32">
                     <h1>Lista rozgrywek</h1>
                     <mat-list>

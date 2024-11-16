@@ -61,5 +61,11 @@ export class CompetitionDashboardComponent implements OnInit {
   }
 
 
+  logout() {
+    this.router.navigate(['/logout']);
+  }
 
+  goBack() {
+    this.router.navigate(['/dashboard']);
+  }
 }

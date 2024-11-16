@@ -4,13 +4,20 @@
     <div class="col-lg-4 d-flex">
       <mat-card class="cardWithShadow ">
         <mat-card-content class="p-32">
-          <a (click)="goBack()" style="cursor: pointer">
-            <img src="./assets/images/svgs/go-back-arrow-svgrepo-com.svg"
-                 class="align-middle m-2" style="width: 20px"
-                 alt="logo"
-            />
-            Powrót do głównego menu
-          </a>
+          <div style="display:inline;">
+            <a (click)="goBack()" style="cursor: pointer">
+              <img src="./assets/images/svgs/go-back-arrow-svgrepo-com.svg"
+                   class="align-middle m-2" style="width: 20px"
+                   alt="logo"
+              />
+            </a>
+            <a (click)="logout()">
+              <img src="./assets/images/svgs/logout-8.svg"
+                   class="align-middle m-2"
+                   style="width: 20px; float: right; cursor: pointer;"
+                   alt="logo"/>
+            </a>
+          </div>
           <div class="text-left" style="display: flex; margin-top: 3rem">
             <!--            <a [routerLink]="['/dashboard']">-->
             <a>

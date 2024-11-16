@@ -42,4 +42,8 @@ export class CompetitionListComponent implements OnInit {
   goBack() {
     this.router.navigate(['/admin-dashboard']);
   }
+
+  logout() {
+    this.router.navigate(['/logout']);
+  }
 }
