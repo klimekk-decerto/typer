@@ -44,4 +44,9 @@ public class ScheduleService {
         entity.removeMatch(matchId);
         return entity.toDto();
     }
+
+    public ScheduleDto get(Long id) {
+        ScheduleEntity entity = repository.findByCompetitionId(id);
+        return entity.toDto();
+    }
 }

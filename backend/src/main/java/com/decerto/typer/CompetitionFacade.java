@@ -3,6 +3,9 @@ package com.decerto.typer;
 import com.decerto.typer.application.requests.CreateMatchRequest;
 import com.decerto.typer.competition.CompetitionEntity;
 import com.decerto.typer.competition.CompetitionRepository;
+import com.decerto.typer.prediction.PredicationRank;
+import com.decerto.typer.prediction.Predictions;
+import com.decerto.typer.prediction.PredictionsRepository;
 import com.decerto.typer.schedule.ScheduleDto;
 import com.decerto.typer.schedule.ScheduleService;
 import lombok.NonNull;
@@ -19,12 +22,14 @@ import java.util.Map;
 public class CompetitionFacade {
     private final CompetitionRepository repository;
     private final ScheduleService scheduleService;
+    private final PredictionsRepository predictionsRepository;
 
     public CompetitionDto createLeague(@NonNull String leagueName, @NonNull List<String> teamsNames) {
         CompetitionEntity entity = CompetitionEntity.ofLeague(leagueName, teamsNames);
         repository.save(entity);
 
         ScheduleDto schedule = scheduleService.createLeagueSchedule(entity.getId());
+        predictionsRepository.save(new Predictions(entity.getId()));
         return toDto(entity, schedule);
     }
 
@@ -38,6 +43,8 @@ public class CompetitionFacade {
     public CompetitionDto finishMatch(Long id, Long matchId, int scoreA, int scoreB) {
         CompetitionEntity entity = repository.findById(id).orElseThrow();
         var schedule = scheduleService.finishMatch(id, matchId, scoreA, scoreB);
+        Predictions predictions = predictionsRepository.findByCompetitionId(id);
+        predictions.settlePredications(matchId, scoreA, scoreB);
         return toDto(entity, schedule);
     }
 
@@ -46,6 +53,7 @@ public class CompetitionFacade {
         CompetitionEntity entity = CompetitionEntity.ofTournament(name, groups);
         repository.save(entity);
         ScheduleDto schedule = scheduleService.createTournamentSchedule(entity.getId());
+        predictionsRepository.save(new Predictions(entity.getId()));
         return toDto(entity, schedule);
     }
 
@@ -58,5 +66,18 @@ public class CompetitionFacade {
     private static CompetitionDto toDto(CompetitionEntity entity, ScheduleDto schedule) {
         List<TeamDto> teams = entity.toDto();
         return new CompetitionDto(entity.getId(), teams, schedule.getMatches());
+    }
+
+    public CompetitionDto predicate(String userName, Long id, Long matchId, int scoreA, int scoreB) {
+        CompetitionEntity entity = repository.findById(id).orElseThrow();
+        Predictions predictions = predictionsRepository.findByCompetitionId(id);
+        predictions.addPredication(userName, matchId, scoreA, scoreB);
+        ScheduleDto schedule = scheduleService.get(id);
+        return toDto(entity, schedule);
+    }
+
+    public PredicationRank getRanking(Long id) {
+        Predictions predictions = predictionsRepository.findByCompetitionId(id);
+        return predictions.getRank();
     }
 }

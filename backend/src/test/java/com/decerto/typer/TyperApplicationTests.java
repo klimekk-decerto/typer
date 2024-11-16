@@ -100,6 +100,62 @@ class TyperApplicationTests {
         Assertions.assertEquals(3, match.getSecondTeamScore());
     }
 
+    @Test
+    void shouldBeAbleToPredicateMatchAndGetPointsForCorrectAnswerAfterFinishMatch() {
+        List<String> teams = List.of("Polska", "Niemcy", "Anglia");
+
+        CompetitionDto competition = sut.createLeague("Puchar świata", teams);
+        MatchDto firstMatch = sut.createMatch(CreateMatchRequest.builder()
+                .competitionId(competition.getId())
+                .date(LocalDateTime.now())
+                .firstTeamId(findTeamIdByName(competition, "Polska"))
+                .secondTeamId(findTeamIdByName(competition, "Niemcy"))
+                .build()).getMatches().getFirst();
+
+        sut.predicate("user", competition.getId(), firstMatch.getMatchId(), 1, 3);
+
+
+        CompetitionDto after = sut.finishMatch(competition.getId(), firstMatch.getMatchId(), 1, 3);
+
+        Assertions.assertEquals(3, sut.getRanking(competition.getId()).getParticipants().getFirst().getPoints());
+    }
+
+    @Test
+    void shouldUserGetPointsForExactPredicateAndPredicateWinner() {
+        List<String> teams = List.of("Polska", "Niemcy", "Anglia");
+
+        CompetitionDto competition = sut.createLeague("Puchar świata", teams);
+        Long firstMatch = createMatch(competition);
+        Long secondMatch = createMatch(competition);
+        Long thirdMatch = createMatch(competition);
+        Long fourthMatch = createMatch(competition);
+        Long fifthMatch = createMatch(competition);
+
+        sut.predicate("user", competition.getId(), firstMatch, 1, 3);
+        sut.predicate("user", competition.getId(), secondMatch, 5, 2);
+        sut.predicate("user", competition.getId(), thirdMatch, 1, 1);
+        sut.predicate("user", competition.getId(), fourthMatch, 3, 3);
+        sut.predicate("user", competition.getId(), fifthMatch, 0, 1);
+
+
+        sut.finishMatch(competition.getId(), firstMatch, 1, 3); // 3
+        sut.finishMatch(competition.getId(), secondMatch, 3, 2); // 1
+        sut.finishMatch(competition.getId(), thirdMatch, 2, 2); // 1
+        sut.finishMatch(competition.getId(), fourthMatch, 3, 3); // 3
+        sut.finishMatch(competition.getId(), fifthMatch, 10, 0); // 0
+
+        Assertions.assertEquals(8, sut.getRanking(competition.getId()).getParticipants().getFirst().getPoints());
+    }
+
+    private Long createMatch(CompetitionDto competition) {
+        return sut.createMatch(CreateMatchRequest.builder()
+                .competitionId(competition.getId())
+                .date(LocalDateTime.now())
+                .firstTeamId(findTeamIdByName(competition, "Polska"))
+                .secondTeamId(findTeamIdByName(competition, "Niemcy"))
+                .build()).getMatches().getLast().getMatchId();
+    }
+
     private static List<String> findTeamNamesForGroup(CompetitionDto result, String grupaA) {
         return result.getTeams().stream()
                 .filter(team -> team.groupName().equals(grupaA))
