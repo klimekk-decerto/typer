@@ -29,20 +29,13 @@ export class Dashboard implements OnInit {
 
     constructor(private router: Router,
                 private httpClient: HttpClient) {
-        this.tournaments = [{
-            name: 'Foo',
-            id: 1,
-        },
-            {
-                name: 'Bla',
-                id: 2,
-            }];
+        this.tournaments = [];
     }
 
     ngOnInit() {
-        // this.httpClient.get<Tournament[]>('/app/api/fetch/competitions').subscribe(values => {
-        //     this.tournaments = values;
-        // })
+        this.httpClient.get<Tournament[]>('/app/api/fetch/competitions').subscribe(values => {
+            this.tournaments = values;
+        })
     }
 
 
