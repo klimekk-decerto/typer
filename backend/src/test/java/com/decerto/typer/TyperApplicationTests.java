@@ -107,7 +107,7 @@ class TyperApplicationTests {
         CompetitionDto competition = sut.createLeague("Puchar świata", teams);
         MatchDto firstMatch = sut.createMatch(CreateMatchRequest.builder()
                 .competitionId(competition.getId())
-                .date(LocalDateTime.now())
+                .date(LocalDateTime.now().plusHours(1))
                 .firstTeamId(findTeamIdByName(competition, "Polska"))
                 .secondTeamId(findTeamIdByName(competition, "Niemcy"))
                 .build()).getMatches().getFirst();
@@ -125,11 +125,11 @@ class TyperApplicationTests {
         List<String> teams = List.of("Polska", "Niemcy", "Anglia");
 
         CompetitionDto competition = sut.createLeague("Puchar świata", teams);
-        Long firstMatch = createMatch(competition);
-        Long secondMatch = createMatch(competition);
-        Long thirdMatch = createMatch(competition);
-        Long fourthMatch = createMatch(competition);
-        Long fifthMatch = createMatch(competition);
+        Long firstMatch = createMatchWithDate(competition, LocalDateTime.now().plusHours(1));
+        Long secondMatch = createMatchWithDate(competition, LocalDateTime.now().plusHours(1));
+        Long thirdMatch = createMatchWithDate(competition, LocalDateTime.now().plusHours(1));
+        Long fourthMatch = createMatchWithDate(competition, LocalDateTime.now().plusHours(1));
+        Long fifthMatch = createMatchWithDate(competition, LocalDateTime.now().plusHours(1));
 
         sut.predicate("user", competition.getId(), firstMatch, 1, 3);
         sut.predicate("user", competition.getId(), secondMatch, 5, 2);
@@ -147,10 +147,29 @@ class TyperApplicationTests {
         Assertions.assertEquals(8, sut.getRanking(competition.getId()).getParticipants().getFirst().getPoints());
     }
 
+    @Test
+    void shouldNotBeAbleToPredicateStartedMatch() {
+        List<String> teams = List.of("Polska", "Niemcy", "Anglia");
+
+        CompetitionDto competition = sut.createLeague("Puchar świata", teams);
+        Long firstMatch = createMatchWithDate(competition, LocalDateTime.now().minusHours(1));
+
+        Assertions.assertThrows(IllegalStateException.class, () -> sut.predicate("user", competition.getId(), firstMatch, 1, 3));
+    }
+
     private Long createMatch(CompetitionDto competition) {
         return sut.createMatch(CreateMatchRequest.builder()
                 .competitionId(competition.getId())
                 .date(LocalDateTime.now())
+                .firstTeamId(findTeamIdByName(competition, "Polska"))
+                .secondTeamId(findTeamIdByName(competition, "Niemcy"))
+                .build()).getMatches().getLast().getMatchId();
+    }
+
+    private Long createMatchWithDate(CompetitionDto competition, LocalDateTime now) {
+        return sut.createMatch(CreateMatchRequest.builder()
+                .competitionId(competition.getId())
+                .date(now)
                 .firstTeamId(findTeamIdByName(competition, "Polska"))
                 .secondTeamId(findTeamIdByName(competition, "Niemcy"))
                 .build()).getMatches().getLast().getMatchId();

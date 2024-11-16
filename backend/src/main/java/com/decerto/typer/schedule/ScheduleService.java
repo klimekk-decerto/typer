@@ -4,6 +4,8 @@ import com.decerto.typer.application.requests.CreateMatchRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
 @RequiredArgsConstructor
 public class ScheduleService {
@@ -48,5 +50,10 @@ public class ScheduleService {
     public ScheduleDto get(Long id) {
         ScheduleEntity entity = repository.findByCompetitionId(id);
         return entity.toDto();
+    }
+
+    public boolean isMatchStarted(Long id, Long matchId) {
+        ScheduleEntity entity = repository.findByCompetitionId(id);
+        return entity.isMatchStarted(matchId, LocalDateTime.now());
     }
 }

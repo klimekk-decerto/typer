@@ -71,6 +71,9 @@ public class CompetitionFacade {
     public CompetitionDto predicate(String userName, Long id, Long matchId, int scoreA, int scoreB) {
         CompetitionEntity entity = repository.findById(id).orElseThrow();
         Predictions predictions = predictionsRepository.findByCompetitionId(id);
+        if (scheduleService.isMatchStarted(id, matchId)) {
+            throw new IllegalStateException("You cannot predicate started match");
+        }
         predictions.addPredication(userName, matchId, scoreA, scoreB);
         ScheduleDto schedule = scheduleService.get(id);
         return toDto(entity, schedule);
