@@ -1,32 +1,33 @@
-import {Injectable} from "@angular/core";
+import {inject, Inject, Injectable, PLATFORM_ID} from "@angular/core";
+import {DOCUMENT, isPlatformBrowser} from "@angular/common";
 
 @Injectable({ providedIn: "root" })
 export class UserDataService {
 
-  // private storage: InjectionToken<Storage>;
+  private readonly platformId = inject(PLATFORM_ID);
 
-  constructor() {
-    // if(typeof window === 'undefined') {
-    //   window = new Window()
-    // }
-    // this.storage = new InjectionToken<Storage>('Local Storage');
+  constructor(@Inject(DOCUMENT) private document: Document) {
   }
 
-  getToken(): string {
-    // console.log('window:    ', window)
-    return '';
-    // return Window.localStorage["token"];
+  //@ts-ignore
+  getToken(): string | null {
+    console.log(this.platformId)
+    if(isPlatformBrowser(this.platformId)){
+      //@ts-ignore
+      return this.document.defaultView?.localStorage?.getItem("token");
+    }
+
   }
-  //
-  // saveToken(token: string): void {
-  //   window.localStorage["token"] = token;
-  // }
-  //
-  // saveRole(role: string): void {
-  //   window.localStorage["role"] = role;
-  // }
-  //
-  // destroyToken(): void {
-  //   window.localStorage.removeItem("token");
-  // }
+
+  saveToken(token: string): void {
+    this.document?.defaultView?.localStorage?.setItem("token",  token);
+  }
+
+  saveRole(role: string): void {
+    this.document?.defaultView?.localStorage?.setItem("role", role);
+  }
+
+  destroyToken(): void {
+    this.document?.defaultView?.localStorage?.removeItem("token");
+  }
 }

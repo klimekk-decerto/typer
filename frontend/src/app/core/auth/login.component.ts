@@ -27,12 +27,13 @@ import {MainPageService} from "../../feature/appointments/pages/main/main.page.s
   templateUrl: './login.component.html',
 })
 export class LoginComponent implements OnInit{
+
   constructor(private router: Router, private authService: AuthService, private mainPageService: MainPageService) {
 
   }
 
   form = new FormGroup({
-    uname: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    uname: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required]),
   });
 
@@ -42,7 +43,7 @@ export class LoginComponent implements OnInit{
 
   submit() {
 
-    // console.log(this.form.value);
+    console.log(this.form.value);
     // this.router.navigate(['/']);
   }
 
