@@ -2,6 +2,7 @@ export interface CompetitionModel {
     id: number,
     name: string;
     matches: MatchesModel[];
+    matchesForPredicate: MatchesModel[];
     teams: TeamModel[];
 }
 

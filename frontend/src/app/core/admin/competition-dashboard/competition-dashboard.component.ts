@@ -59,4 +59,8 @@ export class CompetitionDashboardComponent implements OnInit {
         let id = this.route.snapshot.params['id'];
         this.httpClient.put('/app/api/fetch/competition/' + id + '/matches/' + body.matchId + '/predicate', {scoreA: body.scoreA, scoreB: body.scoreB}).subscribe();
     }
+
+    canPredicate(matchId: number) {
+        return this.competitionModel?.matchesForPredicate.some(match => matchId === match.matchId);
+    }
 }
