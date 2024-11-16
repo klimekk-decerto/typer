@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Setter
 @Getter
@@ -25,6 +27,7 @@ public class MatchEntity {
     private int firstTeamScore;
     private int secondTeamScore;
     private boolean completed;
+    private LocalDateTime date;
 
     public MatchEntity(Long firstTeamId, Long secondTeamId) {
         this.firstTeamId = firstTeamId;
@@ -43,5 +46,9 @@ public class MatchEntity {
         this.firstTeamScore = scoreA;
         this.secondTeamScore = scoreB;
         this.completed = true;
+    }
+
+    public void setMatchDate(LocalDateTime date) {
+        this.date = date;
     }
 }

@@ -7,8 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Setter
@@ -56,16 +58,23 @@ class ScheduleEntity {
     }
 
     public void chooseRoundForMatch(Long roundId, Long matchId) {
-        this.matches.stream()
-                .filter(match -> match.getId().equals(matchId))
-                .findFirst()
+        findMatch(matchId)
                 .ifPresent(match -> match.chooseRound(roundId));
     }
 
     public void finishMatch(Long matchId, int scoreA, int scoreB) {
-        this.matches.stream()
-                .filter(match -> match.getId().equals(matchId))
-                .findFirst()
+        findMatch(matchId)
                 .ifPresent(match -> match.finish(scoreA, scoreB));
+    }
+
+    public void setMatchDate(Long matchId, LocalDateTime date) {
+        findMatch(matchId)
+                .ifPresent(match -> match.setMatchDate(date));
+    }
+
+    private Optional<MatchEntity> findMatch(Long matchId) {
+        return this.matches.stream()
+                .filter(match -> match.getId().equals(matchId))
+                .findFirst();
     }
 }

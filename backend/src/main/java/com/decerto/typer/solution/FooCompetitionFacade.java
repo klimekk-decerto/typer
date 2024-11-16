@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -38,6 +39,13 @@ public class FooCompetitionFacade {
         CompetitionEntity entity = repository.findById(id).orElseThrow();
         List<TeamDto> teams = entity.toDto();
         var schedule = scheduleService.finishMatch(id, matchId, scoreA, scoreB);
+        return new CompetitionDto(entity.getId(), teams, schedule.getRounds(), schedule.getMatches());
+    }
+
+    public CompetitionDto setMatchDate(Long id, Long matchId, LocalDateTime date) {
+        CompetitionEntity entity = repository.findById(id).orElseThrow();
+        List<TeamDto> teams = entity.toDto();
+        var schedule = scheduleService.setMatchDate(id, matchId, date);
         return new CompetitionDto(entity.getId(), teams, schedule.getRounds(), schedule.getMatches());
     }
 }

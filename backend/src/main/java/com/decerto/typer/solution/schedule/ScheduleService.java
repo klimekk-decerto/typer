@@ -4,6 +4,7 @@ import com.decerto.typer.solution.TeamDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -26,6 +27,12 @@ public class ScheduleService {
     public ScheduleDto finishMatch(Long id, Long matchId, int scoreA, int scoreB) {
         ScheduleEntity entity = repository.findByCompetitionId(id);
         entity.finishMatch(matchId, scoreA, scoreB);
+        return entity.toDto();
+    }
+
+    public ScheduleDto setMatchDate(Long id, Long matchId, LocalDateTime date) {
+        ScheduleEntity entity = repository.findByCompetitionId(id);
+        entity.setMatchDate(matchId, date);
         return entity.toDto();
     }
 }
