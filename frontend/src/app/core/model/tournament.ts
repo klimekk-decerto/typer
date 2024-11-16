@@ -3,8 +3,17 @@ export interface Tournament {
   name: string;
 }
 
+interface TournamentTeamMatch {
+  date: string;
+  firstTeamId: number;
+  firstTeamScore: number;
+  matchId: number;
+  secondTeamId: number;
+}
+
 export interface TournamentFull {
   id: number,
+  matches: TournamentTeamMatch[],
   teams: TournamentTeams[];
 }
 

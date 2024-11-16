@@ -35,10 +35,10 @@ export interface MatchElement {
   secondTeamResult: number;
 }
 
-const ELEMENT_DATA: MatchElement[] = [
-  {firstTeamName: 'A', secondTeamName: 'B', date: '2020-20-12 12:00', firstTeamResult: 0, secondTeamResult: 1},
-  {firstTeamName: 'A', secondTeamName: 'B', date: '2020-20-12 12:00', firstTeamResult: 0, secondTeamResult: 1},
-];
+// const ELEMENT_DATA: MatchElement[] = [
+//   {firstTeamName: 'A', secondTeamName: 'B', date: '2020-20-12 12:00', firstTeamResult: 0, secondTeamResult: 1},
+//   {firstTeamName: 'A', secondTeamName: 'B', date: '2020-20-12 12:00', firstTeamResult: 0, secondTeamResult: 1},
+// ];
 
 
 @Component({
@@ -78,6 +78,7 @@ export class MatchCreatorComponent implements OnInit {
   @Input() selectedTournament: TournamentFull | null = null;
 
   constructor(private matchRestService: MatchRestService) {
+    this.dataSource= [];
   }
 
   form = new FormGroup({
@@ -88,7 +89,7 @@ export class MatchCreatorComponent implements OnInit {
 
   teams1: SelectedTeam[] = [];
   teams2: SelectedTeam[] = [];
-  dataSource = ELEMENT_DATA;
+  dataSource: MatchElement[] = [];
   displayedColumns: string[] = ['firstTeamName', 'secondTeamName', 'date', 'firstTeamResult', 'secondTeamResult'];
 
 
@@ -100,9 +101,19 @@ export class MatchCreatorComponent implements OnInit {
     const convertedToSelectedTeam: SelectedTeam[] = this.selectedTournament?.teams.map((v) => {
       return {id: v.id, name: v.name}
     }) ?? [];
-    console.log("sss: ", convertedToSelectedTeam)
     this.teams1 = convertedToSelectedTeam;
     this.teams2 = convertedToSelectedTeam;
+
+
+    //@ts-ignore
+    this.dataSource = this.selectedTournament?.matches.map(match => {
+      return {
+        firstTeamName: this.selectedTournament?.teams.find(t => t.id === match.firstTeamId)?.name,
+        secondTeamName: this.selectedTournament?.teams.find(t => t.id === match.secondTeamId)?.name,
+        date: match?.date,
+        firstTeamResult: null,
+        secondTeamResult: null}
+    }) ?? [];
   }
 
   addMatch(): void {
