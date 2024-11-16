@@ -15,8 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -30,7 +28,7 @@ public class FooCompetitionFacade {
         repository.save(entity);
 
         List<TeamDto> teams = entity.toDto();
-        ScheduleDto schedule = scheduleService.createLeagueSchedule(entity.getId(), teams);
+        ScheduleDto schedule = scheduleService.createLeagueSchedule(entity.getId());
         return new CompetitionDto(entity.getId(), teams, schedule.getRounds(), schedule.getMatches());
     }
 
@@ -61,13 +59,11 @@ public class FooCompetitionFacade {
         return new CompetitionDto(entity.getId(), teams, schedule.getRounds(), schedule.getMatches());
     }
 
-    public CompetitionDto createTournament(String name, Map<String, List<String>> groups, FinalStageType stageType) {
+    public CompetitionDto createTournament(String name, Map<String, List<String>> groups) {
         CompetitionEntity entity = CompetitionEntity.ofTournament(name, groups);
+        repository.save(entity);
         List<TeamDto> teams = entity.toDto();
-        Map<String, List<TeamDto>> teamsMap = teams.stream()
-                .collect(Collectors.groupingBy(map -> map.groupName(),
-                        Collectors.mapping(Function.identity(), Collectors.toList())));
-        ScheduleDto schedule = scheduleService.createTournamentSchedule(entity.getId(), teamsMap, stageType);
+        ScheduleDto schedule = scheduleService.createTournamentSchedule(entity.getId());
         return new CompetitionDto(entity.getId(), teams, schedule.getRounds(), schedule.getMatches());
     }
 }
