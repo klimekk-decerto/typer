@@ -38,8 +38,8 @@
       </mat-card>
       <mat-card style="margin-left: 1rem">
         <mat-card-content class="p-32">
-          <app-match-creator *ngIf="activeTournament?.id"
-                             [selectedTournament]="activeTournament"></app-match-creator>
+          <app-match-creator *ngIf="formVisible"
+                             [config]="matchCreatorConfig"></app-match-creator>
         </mat-card-content>
       </mat-card>
     </div>

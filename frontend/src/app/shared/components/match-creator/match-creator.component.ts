@@ -5,8 +5,7 @@ import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
 import {MatIcon} from "@angular/material/icon";
 import {MatFabButton} from "@angular/material/button";
 import {MatchRestService} from "../../../core/admin/rest/match.rest.service";
-import {take} from "rxjs";
-import {TournamentFull} from "../../../core/model/tournament";
+import {Subject, take} from "rxjs";
 import {MatCard, MatCardContent} from "@angular/material/card";
 import {
   MatCell, MatCellDef,
@@ -19,6 +18,7 @@ import {
   MatRow, MatRowDef,
   MatTable, MatTableModule
 } from "@angular/material/table";
+import {MatchCreatorConfig} from "./match-creator.config.provider";
 
 interface SelectedTeam {
   id: number;
@@ -34,12 +34,6 @@ export interface MatchElement {
   firstTeamResult: number;
   secondTeamResult: number;
 }
-
-// const ELEMENT_DATA: MatchElement[] = [
-//   {firstTeamName: 'A', secondTeamName: 'B', date: '2020-20-12 12:00', firstTeamResult: 0, secondTeamResult: 1},
-//   {firstTeamName: 'A', secondTeamName: 'B', date: '2020-20-12 12:00', firstTeamResult: 0, secondTeamResult: 1},
-// ];
-
 
 @Component({
   selector: 'app-match-creator',
@@ -75,7 +69,8 @@ export interface MatchElement {
 })
 export class MatchCreatorComponent implements OnInit {
 
-  @Input() selectedTournament: TournamentFull | null = null;
+  //@ts-ignore
+  @Input() config: MatchCreatorConfig ;
 
   constructor(private matchRestService: MatchRestService) {
     this.dataSource= [];
@@ -94,26 +89,29 @@ export class MatchCreatorComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.config.selectedTournament.subscribe(tournament => {
+      const convertedToSelectedTeam: SelectedTeam[] = tournament?.teams.map((v) => {
+        return {id: v.id, name: v.name}
+      }) ?? [];
+      this.teams1 = convertedToSelectedTeam;
+      this.teams2 = convertedToSelectedTeam;
+
+
+      //@ts-ignore
+      this.dataSource =tournament?.matches?.map(match => {
+        return {
+          firstTeamName: tournament?.teams?.find(t => t.id === match.firstTeamId)?.name,
+          secondTeamName: tournament?.teams?.find(t => t.id === match.secondTeamId)?.name,
+          date: match?.date,
+          firstTeamResult: null,
+          secondTeamResult: null}
+      }) ?? [];
+    })
     this.refreshTeamLists();
   }
 
   private refreshTeamLists() {
-    const convertedToSelectedTeam: SelectedTeam[] = this.selectedTournament?.teams.map((v) => {
-      return {id: v.id, name: v.name}
-    }) ?? [];
-    this.teams1 = convertedToSelectedTeam;
-    this.teams2 = convertedToSelectedTeam;
 
-
-    //@ts-ignore
-    this.dataSource = this.selectedTournament?.matches.map(match => {
-      return {
-        firstTeamName: this.selectedTournament?.teams.find(t => t.id === match.firstTeamId)?.name,
-        secondTeamName: this.selectedTournament?.teams.find(t => t.id === match.secondTeamId)?.name,
-        date: match?.date,
-        firstTeamResult: null,
-        secondTeamResult: null}
-    }) ?? [];
   }
 
   addMatch(): void {
@@ -124,7 +122,7 @@ export class MatchCreatorComponent implements OnInit {
       date: this.form.controls.date.value
     }).pipe(take(1))
       .subscribe(val => {
-        console.log(val);
+        this.config.selectedTournament.next(val);
       })
   }
 
