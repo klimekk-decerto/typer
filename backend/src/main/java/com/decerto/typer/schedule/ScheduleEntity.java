@@ -57,9 +57,10 @@ public class ScheduleEntity {
     }
 
 
-    public void addMatch(CreateMatchRequest request) {
+    public MatchEntity addMatch(CreateMatchRequest request) {
         MatchEntity match = new MatchEntity(request.getFirstTeamId(), request.getSecondTeamId(), request.getDate());
         matches.add(match);
+        return match;
     }
 
     public void removeMatch(Long matchId) {

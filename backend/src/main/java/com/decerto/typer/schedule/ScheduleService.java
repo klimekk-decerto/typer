@@ -1,8 +1,12 @@
 package com.decerto.typer.schedule;
 
 import com.decerto.typer.application.requests.CreateMatchRequest;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -10,6 +14,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class ScheduleService {
     private final ScheduleRepository repository;
+    private final EntityManager entityManager;
 
     public ScheduleDto createLeagueSchedule(Long competitionId) {
         ScheduleEntity entity = ScheduleEntity.ofLeagueSchedule(competitionId);
@@ -33,12 +38,13 @@ public class ScheduleService {
 
     }
 
-
-    public ScheduleDto createMatch(CreateMatchRequest request) {
+    public Pair<ScheduleDto, Long> createMatch(CreateMatchRequest request) {
         ScheduleEntity entity = repository.findByCompetitionId(request.getCompetitionId());
-        entity.addMatch(request);
+        MatchEntity match = entity.addMatch(request);
+        entityManager.persist(match);
         repository.save(entity);
-        return entity.toDto();
+        entityManager.flush();
+        return Pair.of(entity.toDto(), match.getId());
     }
 
     public ScheduleDto deleteMatch(Long id, Long matchId) {

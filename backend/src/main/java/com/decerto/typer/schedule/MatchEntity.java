@@ -22,7 +22,6 @@ public class MatchEntity {
     private Long id;
     private Long firstTeamId;
     private Long secondTeamId;
-    private Long roundId;
     private int firstTeamScore;
     private int secondTeamScore;
     private boolean completed;

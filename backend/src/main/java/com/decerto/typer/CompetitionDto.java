@@ -14,4 +14,12 @@ public class CompetitionDto {
 
     List<MatchDto> matches;
 
+
+    MatchDto getMatchForce(Long id) {
+        return matches.stream()
+                .filter(match -> match.getMatchId().equals(id))
+                .findFirst()
+                .orElseThrow();
+    }
+
 }

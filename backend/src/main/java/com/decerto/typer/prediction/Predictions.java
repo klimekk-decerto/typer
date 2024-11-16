@@ -28,27 +28,31 @@ public class Predictions {
     private Map<String, UserPrediction> predictionsPerUser;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    private Set<Long> settled;
+    private Set<Long> settledMatches;
+
 
     @JdbcTypeCode(SqlTypes.JSON)
     private PredicationRank rank;
 
+    @JdbcTypeCode(SqlTypes.JSON)
+    private Set<Long> allMatches;
+
     public Predictions(Long id) {
-        this(null, id, new HashMap<>(), new HashSet<>(), new PredicationRank());
+        this(null, id, new HashMap<>(), new HashSet<>(), new PredicationRank(), new HashSet<>());
     }
 
     public void settlePredications(Long matchId, int scoreA, int scoreB) {
-        if (settled.contains(matchId)) {
+        if (settledMatches.contains(matchId)) {
             throw new IllegalArgumentException("Cannot settle settled match=%s".formatted(matchId));
         }
-        this.settled.add(matchId);
+        this.settledMatches.add(matchId);
         predictionsPerUser.entrySet()
                 .forEach(entry -> rank.addPredicationPoints(entry.getKey(), entry.getValue().settlePredication(matchId, scoreA, scoreB)));
 
     }
 
     public void addPredication(String username, Long matchId, int scoreA, int scoreB) {
-        if (settled.contains(matchId)) {
+        if (settledMatches.contains(matchId)) {
             throw new IllegalArgumentException("Cannot predicate settled match=%s".formatted(matchId));
         }
         UserPrediction userPrediction = Optional.ofNullable(predictionsPerUser.get(username))
@@ -58,5 +62,20 @@ public class Predictions {
                     return predication;
                 });
         userPrediction.addPredication(matchId, scoreA, scoreB);
+    }
+
+    public void addMatch(Long matchId) {
+        allMatches.add(matchId);
+    }
+
+    public void deleteMatch(Long matchId) {
+        allMatches.remove(matchId);
+    }
+
+    public Set<Long> getAllMatchesAvailableForPredication() {
+        Set<Long> result = new HashSet<>();
+        result.addAll(allMatches);
+        result.removeAll(settledMatches);
+        return result;
     }
 }

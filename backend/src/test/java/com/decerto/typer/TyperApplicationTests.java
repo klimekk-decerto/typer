@@ -157,14 +157,26 @@ class TyperApplicationTests {
         Assertions.assertThrows(IllegalStateException.class, () -> sut.predicate("user", competition.getId(), firstMatch, 1, 3));
     }
 
-    private Long createMatch(CompetitionDto competition) {
-        return sut.createMatch(CreateMatchRequest.builder()
-                .competitionId(competition.getId())
-                .date(LocalDateTime.now())
-                .firstTeamId(findTeamIdByName(competition, "Polska"))
-                .secondTeamId(findTeamIdByName(competition, "Niemcy"))
-                .build()).getMatches().getLast().getMatchId();
+    @Test
+    void shouldUserGetListOfMatchesToPredicate() {
+        List<String> teams = List.of("Polska", "Niemcy", "Anglia");
+
+        CompetitionDto competition = sut.createLeague("Puchar świata", teams);
+        Long firstMatch = createMatchWithDate(competition, LocalDateTime.now().plusHours(1));
+        Long secondMatch = createMatchWithDate(competition, LocalDateTime.now().plusHours(1));
+        Long thirdMatch = createMatchWithDate(competition, LocalDateTime.now().plusHours(1));
+
+        sut.predicate("user", competition.getId(), firstMatch, 1, 3);
+        sut.predicate("user", competition.getId(), secondMatch, 5, 2);
+
+
+        var afterFinish = sut.finishMatch(competition.getId(), firstMatch, 1, 3);
+
+        Assertions.assertEquals(
+                List.of(afterFinish.getMatchForce(secondMatch), afterFinish.getMatchForce(thirdMatch)),
+                sut.getMatchesForPredicate(competition.getId()));
     }
+
 
     private Long createMatchWithDate(CompetitionDto competition, LocalDateTime now) {
         return sut.createMatch(CreateMatchRequest.builder()

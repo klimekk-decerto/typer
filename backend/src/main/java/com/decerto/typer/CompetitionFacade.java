@@ -6,8 +6,10 @@ import com.decerto.typer.competition.CompetitionRepository;
 import com.decerto.typer.prediction.PredicationRank;
 import com.decerto.typer.prediction.Predictions;
 import com.decerto.typer.prediction.PredictionsRepository;
+import com.decerto.typer.schedule.MatchDto;
 import com.decerto.typer.schedule.ScheduleDto;
 import com.decerto.typer.schedule.ScheduleService;
+import jakarta.persistence.EntityManager;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Component
@@ -23,6 +26,7 @@ public class CompetitionFacade {
     private final CompetitionRepository repository;
     private final ScheduleService scheduleService;
     private final PredictionsRepository predictionsRepository;
+
 
     public CompetitionDto createLeague(@NonNull String leagueName, @NonNull List<String> teamsNames) {
         CompetitionEntity entity = CompetitionEntity.ofLeague(leagueName, teamsNames);
@@ -35,8 +39,10 @@ public class CompetitionFacade {
 
     public CompetitionDto createMatch(CreateMatchRequest request) {
         CompetitionEntity entity = repository.findById(request.getCompetitionId()).orElseThrow();
-        ScheduleDto schedule = scheduleService.createMatch(request);
-        return toDto(entity, schedule);
+        var pair = scheduleService.createMatch(request);
+        Predictions predictions = predictionsRepository.findByCompetitionId(request.getCompetitionId());
+        predictions.addMatch(pair.getSecond());
+        return toDto(entity, pair.getFirst());
     }
 
 
@@ -60,6 +66,8 @@ public class CompetitionFacade {
     public CompetitionDto deleteMatch(Long id, Long matchId) {
         CompetitionEntity entity = repository.findById(id).orElseThrow();
         ScheduleDto schedule = scheduleService.deleteMatch(entity.getId(), matchId);
+        Predictions predictions = predictionsRepository.findByCompetitionId(id);
+        predictions.deleteMatch(matchId);
         return toDto(entity, schedule);
     }
 
@@ -82,5 +90,12 @@ public class CompetitionFacade {
     public PredicationRank getRanking(Long id) {
         Predictions predictions = predictionsRepository.findByCompetitionId(id);
         return predictions.getRank();
+    }
+
+    public List<MatchDto> getMatchesForPredicate(Long id) {
+        Predictions predictions = predictionsRepository.findByCompetitionId(id);
+        Set<Long> matches = predictions.getAllMatchesAvailableForPredication();
+        ScheduleDto schedule = scheduleService.get(id);
+        return schedule.findMatches(matches);
     }
 }
