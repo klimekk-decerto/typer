@@ -8,6 +8,8 @@ import {MatCheckbox} from "@angular/material/checkbox";
 import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {Router} from "@angular/router";
+import {MatDialog} from "@angular/material/dialog";
+import {FormDialogComponent} from "../form-dialog/form-dialog.component";
 
 @Component({
     selector: 'app-main-page',
@@ -32,7 +34,7 @@ import {Router} from "@angular/router";
     templateUrl: 'main-page.component.html'
 })
 export class MainPageComponent implements OnInit {
-    constructor(private router: Router) {
+    constructor(private router: Router, private dialog: MatDialog) {
     }
 
     ngOnInit() {
@@ -40,5 +42,13 @@ export class MainPageComponent implements OnInit {
 
     openList() {
         this.router.navigate(['/admin-dashboard-competitions']);
+    }
+
+    openCreator() {
+        const dialogRef = this.dialog.open(FormDialogComponent);
+
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('Dialog został zamknięty');
+        });
     }
 }

@@ -1,24 +1,31 @@
 <div class="blank-layout-container justify-content-center align-items-center bg-light-primary">
-    <div
-            class="position-relative row w-100 h-100 bg-gredient justify-content-center">
-        <div class="col-lg-4 d-flex">
-            <mat-card class="cardWithShadow ">
-                <mat-card-content class="p-32">
-                    <div class="text-left" style="display: flex;">
-                        <!--            <a [routerLink]="['/dashboard']">-->
-                        <a>
-                            <img src="./assets/images/svgs/list-svgrepo-com.svg"
-                                 class="align-middle m-2 w-50px"
-                                 alt="logo"
-                            />
-                        </a>
-                        <h2 style="margin-left: 1rem; margin-top: 1.5rem;">Lista rozgrywek</h2>
-                    </div>
-                    <a mat-flat-button color="primary" class="w-100">
-                        Utwórz nowe rozgrywki
-                    </a>
-                </mat-card-content>
-            </mat-card>
-        </div>
+  <div
+    class="position-relative row w-100 h-100 bg-gredient justify-content-center">
+    <div class="col-lg-4 d-flex">
+      <mat-card class="cardWithShadow ">
+        <mat-card-content class="p-32">
+          <div class="text-left" style="display: flex;">
+            <!--            <a [routerLink]="['/dashboard']">-->
+            <a>
+              <img src="./assets/images/svgs/list-svgrepo-com.svg"
+                   class="align-middle m-2 w-50px"
+                   alt="logo"
+              />
+            </a>
+            <h2 style="margin-left: 1rem; margin-top: 1.5rem;">Lista rozgrywek</h2>
+          </div>
+          <li *ngFor="let item of tournaments;">
+            <a mat-flat-button style="background-color: cornflowerblue" class="w-100">
+              {{ item.name }}
+            </a>
+          </li>
+        </mat-card-content>
+      </mat-card>
+      <mat-card style="margin-left: 1rem">
+        <mat-card-content class="p-32">
+
+        </mat-card-content>
+      </mat-card>
     </div>
+  </div>
 </div>

@@ -20,7 +20,7 @@ export const routes: Routes = [
       {
         path: 'admin-dashboard-competitions',
         component: CompetitionListComponent
-      },
+      }
     ],
   }
 ];

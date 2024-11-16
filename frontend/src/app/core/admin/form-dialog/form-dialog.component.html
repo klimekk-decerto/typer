@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>Dodawanie rozgrywki</h2>
+<mat-dialog-content style="min-width: 40rem">
+  <form class="m-t-30" [formGroup]="formData">
+    <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block"
+    >Nazwa turnieju/ligi
+    </mat-label
+    >
+    <mat-form-field appearance="outline" class="w-100" color="primary">
+      <input matInput formControlName="competitionName"/>
+    </mat-form-field>
+
+    <mat-radio-group>
+      <mat-radio-button #turniej value="1">
+        Turniej
+      </mat-radio-button>
+      <mat-radio-button #liga value="2">
+        Liga
+      </mat-radio-button>
+    </mat-radio-group>
+
+    <div *ngIf="turniej.checked" formArrayName="groups">
+      <div *ngFor="let field of groups.controls; let i = index" [formGroupName]="i">
+        <mat-form-field>
+          <mat-label>Grupa</mat-label>
+          <input matInput formControlName="group" required>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Drużyny</mat-label>
+          <input matInput formControlName="teams" required>
+        </mat-form-field>
+      </div>
+      <button mat-button type="button" (click)="addField()">Dodaj grupę</button>
+    </div>
+
+    <div *ngIf="liga.checked">
+      <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Lista drużyn</mat-label>
+      <mat-form-field appearance="outline" class="w-100" color="primary">
+        <input matInput formControlName="teams"/>
+      </mat-form-field>
+    </div>
+    <a mat-flat-button color="primary" class="w-100" (click)="onSubmit()">
+      Utwórz
+    </a>
+    <!-- input -->
+  </form>
+
+</mat-dialog-content>
