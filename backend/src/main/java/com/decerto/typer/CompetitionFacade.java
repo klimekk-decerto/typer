@@ -1,12 +1,11 @@
-package com.decerto.typer.solution;
+package com.decerto.typer;
 
 import com.decerto.typer.application.requests.AssignRoundToMatchRequest;
-import com.decerto.typer.solution.competition.CompetitionEntity;
-import com.decerto.typer.solution.competition.FooCompetitionRepository;
-import com.decerto.typer.solution.schedule.FinalStageType;
-import com.decerto.typer.solution.schedule.MatchEntity;
-import com.decerto.typer.solution.schedule.ScheduleDto;
-import com.decerto.typer.solution.schedule.ScheduleService;
+import com.decerto.typer.competition.CompetitionEntity;
+import com.decerto.typer.competition.CompetitionRepository;
+import com.decerto.typer.schedule.MatchEntity;
+import com.decerto.typer.schedule.ScheduleDto;
+import com.decerto.typer.schedule.ScheduleService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,8 +18,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Component
 @Transactional
-public class FooCompetitionFacade {
-    private final FooCompetitionRepository repository;
+public class CompetitionFacade {
+    private final CompetitionRepository repository;
     private final ScheduleService scheduleService;
 
     public CompetitionDto createLeague(@NonNull String leagueName, @NonNull List<String> teamsNames) {

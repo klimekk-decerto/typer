@@ -1,4 +1,4 @@
-package com.decerto.typer.solution.schedule;
+package com.decerto.typer.schedule;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

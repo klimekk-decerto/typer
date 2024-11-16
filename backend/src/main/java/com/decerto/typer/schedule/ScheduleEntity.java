@@ -1,4 +1,4 @@
-package com.decerto.typer.solution.schedule;
+package com.decerto.typer.schedule;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

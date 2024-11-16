@@ -2,19 +2,18 @@ package com.decerto.typer.application;
 
 import com.decerto.typer.application.requests.AssignRoundToMatchRequest;
 import com.decerto.typer.application.requests.CreateLeagueCompetitionRequest;
-import com.decerto.typer.application.requests.CreateTournamentCompetitionRequest;
 import com.decerto.typer.competition.Competition;
-import com.decerto.typer.solution.CompetitionDto;
-import com.decerto.typer.solution.FooCompetitionFacade;
+import com.decerto.typer.CompetitionDto;
+import com.decerto.typer.CompetitionFacade;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/completion")
 public class CompetitionController {
 
-    private final FooCompetitionFacade competitionFacade;
+    private final CompetitionFacade competitionFacade;
 
-    public CompetitionController(FooCompetitionFacade competitionFacade) {
+    public CompetitionController(CompetitionFacade competitionFacade) {
         this.competitionFacade = competitionFacade;
     }
 

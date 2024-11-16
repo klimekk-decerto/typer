@@ -1,6 +1,6 @@
-package com.decerto.typer.solution.competition;
+package com.decerto.typer.competition;
 
-import com.decerto.typer.solution.TeamDto;
+import com.decerto.typer.TeamDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;

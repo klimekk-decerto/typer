@@ -1,8 +1,7 @@
-package com.decerto.typer.solution.competition;
+package com.decerto.typer.competition;
 
 import com.decerto.typer.competition.Match;
-import com.decerto.typer.solution.CompetitionDto;
-import com.decerto.typer.solution.TeamDto;
+import com.decerto.typer.TeamDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +11,6 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.Map;
 
 @Entity
