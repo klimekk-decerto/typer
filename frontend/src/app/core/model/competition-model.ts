@@ -2,6 +2,8 @@ export interface CompetitionModel {
     id: number,
     name: string;
     matches: MatchesModel[];
+    matchesForPredicate: MatchesModel[];
+    teams: TeamModel[];
 }
 
 export interface MatchesModel {
@@ -11,4 +13,9 @@ export interface MatchesModel {
   firstTeamScore: number;
   secondTeamScore: number;
   date: string;
+}
+
+export interface TeamModel {
+    name: string;
+    id: number
 }

@@ -20,25 +20,33 @@
 
 .title {
   text-align: center;
-  font-size: 2.5rem;
+  font-size: 1rem;
   font-weight: bold;
-  margin-bottom: 2rem;
+  padding:0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 .match-container {
   display: flex;
   width: 100%;
   justify-content: space-between;;
-}
-.title {
-  text-align: center;
-  font-size: 1rem;
+  align-items: center;
 }
 
 .team-name {
   font-weight: bold;
+  font-size: 1rem;
 }
 
 .result {
-  font-size: 1.8rem;
+  font-size: 1rem;
+  margin: 0 5px;
+}
+
+.matches-container-box {
+}
+
+.button {
+  margin-bottom: .5em;
 }
