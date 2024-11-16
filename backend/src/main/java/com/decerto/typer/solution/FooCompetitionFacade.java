@@ -7,11 +7,13 @@ import com.decerto.typer.solution.schedule.ScheduleService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 @Component
+@Transactional
 public class FooCompetitionFacade {
     private final FooCompetitionRepository repository;
     private final ScheduleService scheduleService;
@@ -22,6 +24,13 @@ public class FooCompetitionFacade {
 
         List<TeamDto> teams = entity.toDto();
         ScheduleDto schedule = scheduleService.createLeagueSchedule(entity.getId(), teams);
-        return new CompetitionDto(teams, schedule.getRounds(), schedule.getMatches());
+        return new CompetitionDto(entity.getId(), teams, schedule.getRounds(), schedule.getMatches());
+    }
+
+    public CompetitionDto chooseRoundForMatch(Long id, Long roundId, Long matchId) {
+        CompetitionEntity entity = repository.findById(id).orElseThrow();
+        List<TeamDto> teams = entity.toDto();
+        var schedule = scheduleService.chooseRoundForMatch(id, roundId, matchId);
+        return new CompetitionDto(entity.getId(), teams, schedule.getRounds(), schedule.getMatches());
     }
 }

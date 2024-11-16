@@ -16,4 +16,10 @@ public class ScheduleService {
         repository.save(entity);
         return entity.toDto();
     }
+
+    public ScheduleDto chooseRoundForMatch(Long id, Long roundId, Long matchId) {
+        ScheduleEntity entity = repository.findByCompetitionId(id);
+        entity.chooseRoundForMatch(roundId, matchId);
+        return entity.toDto();
+    }
 }

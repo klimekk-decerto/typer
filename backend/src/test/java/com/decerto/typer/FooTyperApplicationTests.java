@@ -4,6 +4,7 @@ import com.decerto.typer.solution.CompetitionDto;
 import com.decerto.typer.solution.FooCompetitionFacade;
 import com.decerto.typer.solution.TeamDto;
 import com.decerto.typer.solution.schedule.MatchDto;
+import com.decerto.typer.solution.schedule.RoundDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,19 @@ class FooTyperApplicationTests {
         Assertions.assertTrue(allMatches.stream().anyMatch(match -> areTeamsCorrect(match, niemcy, polska)));
         Assertions.assertTrue(allMatches.stream().anyMatch(match -> areTeamsCorrect(match, anglia, niemcy)));
         Assertions.assertTrue(allMatches.stream().anyMatch(match -> areTeamsCorrect(match, niemcy, anglia)));
+    }
+
+    @Test
+    void shouldChooseRoundForMatch() {
+        List<String> teams = List.of("Polska", "Niemcy", "Anglia");
+
+        CompetitionDto result = sut.createLeague("Puchar świata", teams);
+        RoundDto firstRound = result.getRounds().getFirst();
+        MatchDto firstMatch = result.getMatches().getFirst();
+
+        CompetitionDto after = sut.chooseRoundForMatch(result.getId(), firstRound.id(), firstMatch.getMatchId());
+
+        Assertions.assertEquals(firstRound.id(), after.getMatches().getFirst().getRoundId());
     }
 
     private boolean areTeamsCorrect(MatchDto match, Long polska, Long anglia) {

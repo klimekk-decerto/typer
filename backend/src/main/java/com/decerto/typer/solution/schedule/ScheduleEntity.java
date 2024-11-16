@@ -23,11 +23,11 @@ class ScheduleEntity {
     private Long competitionId;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "round_id")
+    @JoinColumn(name = "schedule_id")
     private List<RoundEntity> rounds;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "round_id")
+    @JoinColumn(name = "schedule_id")
     private List<MatchEntity> matches;
 
     public static ScheduleEntity ofLeagueSchedule(Long competitionId, List<TeamDto> teams) {
@@ -40,7 +40,7 @@ class ScheduleEntity {
         for (int i = 0; i < teams.size(); i++) {
             for (int j = 0; j < teams.size(); j++) {
                 if (i != j) {
-                    MatchEntity match = new MatchEntity(null, teams.get(i).id(), teams.get(j).id());
+                    MatchEntity match = new MatchEntity(null, teams.get(i).id(), teams.get(j).id(), null);
                     matches.add(match);
                 }
             }
@@ -53,5 +53,12 @@ class ScheduleEntity {
                 rounds.stream().map(RoundEntity::toDto).toList(),
                 matches.stream().map(MatchEntity::toDto).toList()
         );
+    }
+
+    public void chooseRoundForMatch(Long roundId, Long matchId) {
+        this.matches.stream()
+                .filter(match -> match.getId().equals(matchId))
+                .findFirst()
+                .ifPresent(match -> match.chooseRound(roundId));
     }
 }

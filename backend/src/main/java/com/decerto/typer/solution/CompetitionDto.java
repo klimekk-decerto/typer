@@ -8,10 +8,12 @@ import java.util.List;
 
 @Value
 public class CompetitionDto {
+    Long id;
 
     List<TeamDto> teams;
 
     List<RoundDto> rounds;
 
     List<MatchDto> matches;
+
 }
